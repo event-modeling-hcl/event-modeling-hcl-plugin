@@ -1,0 +1,38 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  structure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Claude Code for claude plugin validate
+        run: npm install -g @anthropic-ai/claude-code
+      - name: Structure tests
+        run: sh tests/structure.sh
+
+  scripts:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: install-emhcl.sh against a fake release
+        run: sh tests/install-emhcl.test.sh
+      - name: install-emhcl.sh against the pinned release of the example
+        working-directory: examples/pet-clinic
+        run: |
+          emhcl=$(sh ../../plugins/emhcl/skills/em-collaborate/scripts/install-emhcl.sh --config .emhcl.yml --bin-dir "$RUNNER_TEMP/bin")
+          sh ../../plugins/emhcl/skills/em-collaborate/scripts/check-compatibility.sh "$emhcl"
+          "$emhcl" validate --profile valid model

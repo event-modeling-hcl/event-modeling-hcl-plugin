@@ -1,0 +1,78 @@
+# GitLab CI template of the emhcl plugin (DP5).
+#
+# It adds two jobs to a model repository:
+#   emhcl-validate  validates the model with merge_profile from .emhcl.yml, in
+#                   merge request pipelines and on the default branch
+#   pages           renders the default branch to GitLab Pages
+#
+# This template names no emhcl version. Both jobs run install-emhcl.sh from
+# the same plugin tag, and that script installs the release that .emhcl.yml
+# pins. So CI and Claude run the same emhcl for each commit.
+#
+# Include it at a plugin tag, and pass the same tag as plugin_ref:
+#
+#   include:
+#     - remote: https://raw.githubusercontent.com/event-modeling-hcl/emhcl-plugin/emhcl--v0.1.0/ci-templates/emhcl.gitlab-ci.yml
+#       inputs:
+#         plugin_ref: emhcl--v0.1.0
+#
+# Then set the merge method of the project to "Fast-forward merge" and turn on
+# "Pipelines must succeed". With fast-forward merges, emhcl-validate checks the
+# same files that reach the default branch.
+spec:
+  inputs:
+    plugin_ref:
+      description: Tag of github.com/event-modeling-hcl/emhcl-plugin. Use the tag of the include URL.
+    image:
+      description: Container image with a POSIX shell, tar, and sha256sum. The jobs add curl with apk or apt-get when it is missing.
+      default: alpine:3.22
+    validate_stage:
+      default: test
+    pages_stage:
+      default: deploy
+---
+.emhcl-setup:
+  image: $[[ inputs.image ]]
+  variables:
+    EMHCL_PLUGIN_REF: $[[ inputs.plugin_ref ]]
+    EMHCL_BIN_DIR: $CI_PROJECT_DIR/.emhcl-bin
+  before_script:
+    - |
+      if ! command -v curl >/dev/null 2>&1; then
+        if command -v apk >/dev/null 2>&1; then apk add --no-cache curl >/dev/null
+        elif command -v apt-get >/dev/null 2>&1; then apt-get update -qq && apt-get install -y -qq curl ca-certificates >/dev/null
+        fi
+      fi
+    - curl -fsSL "https://raw.githubusercontent.com/event-modeling-hcl/emhcl-plugin/${EMHCL_PLUGIN_REF}/plugins/emhcl/skills/em-collaborate/scripts/install-emhcl.sh" -o /tmp/install-emhcl.sh
+    - EMHCL=$(sh /tmp/install-emhcl.sh --config .emhcl.yml)
+    - |
+      # emhcl_key KEY DEFAULT prints the value of a flat key of .emhcl.yml.
+      emhcl_key() {
+        v=$(sed -n "s/^$1:[[:space:]]*//p" .emhcl.yml | head -n 1 | sed "s/[[:space:]]#.*$//; s/[[:space:]]*$//; s/^[\"']//; s/[\"']$//")
+        printf '%s\n' "${v:-$2}"
+      }
+    - MODEL_PATH=$(emhcl_key model_path model)
+
+emhcl-validate:
+  extends: .emhcl-setup
+  stage: $[[ inputs.validate_stage ]]
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - PROFILE=$(emhcl_key merge_profile strict)
+    - echo "emhcl validate --profile $PROFILE $MODEL_PATH"
+    - '"$EMHCL" validate --profile "$PROFILE" "$MODEL_PATH"'
+
+pages:
+  extends: .emhcl-setup
+  stage: $[[ inputs.pages_stage ]]
+  needs: []
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - mkdir -p public
+    - '"$EMHCL" diagram --title "$CI_PROJECT_PATH $CI_COMMIT_BRANCH @ $CI_COMMIT_SHORT_SHA" -o public/index.html "$MODEL_PATH"'
+  artifacts:
+    paths:
+      - public

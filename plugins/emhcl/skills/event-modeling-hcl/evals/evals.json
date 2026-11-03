@@ -1,0 +1,85 @@
+{
+  "skill_name": "event-modeling-hcl",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create `borrowing.em.hcl` for a library. A member uses a checkout screen to borrow an available book copy. Borrow Book produces Book Borrowed; reject an attempt when the copy is already on loan. Members can view their current loans. When a loan becomes overdue, the system should request an overdue notice without human input. Include UUID member_id and copy_id contracts, concrete Read Model questions, and scenarios. Write the file in the current directory and validate it if the Event Modeling HCL CLI is available.",
+      "expected_output": "A coherent valid v0.7.0 model with one board in business-time order, containing State Change, State View, and Automation workflows with owned Events, reusable field types, explicit field types, canonical flows, and pattern-correct scenarios.",
+      "files": [],
+      "expectations": [
+        "The output is a `.em.hcl` file with lower-snake-case block labels, context-owned Events, one `board` block that lists every workflow in business-time order, and an explicit `type` on every field and subfield.",
+        "Borrowing is a state_change with Screen to Command and Command to Event expressed in canonical direction.",
+        "Current loans is a state_view whose Read Model has a concrete question and whose scenario has Given Event and Then Read Model with no When step.",
+        "The overdue notice reaction is an automation consuming only internal Events, with a pending-work read model feeding the processor, and includes a machine-action scenario using HCL When/Then grammar.",
+        "member_id and copy_id are reusable UUID field types and connected contract fields pass an information-provenance review without a mapping DSL.",
+        "The already-on-loan rule appears as an observable error scenario rather than invented implementation logic or expect_empty_list."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "From this requirement, create `payment-activation.em.hcl`: Stripe sends Payment Captured. Our Subscriptions domain uses that fact to Activate Subscription and records Subscription Activated. The payment message contains payment_id, subscription_id, amount, and currency. We do not yet know whether partial payments activate a subscription. Model that uncertainty rather than choosing a rule. Include a success scenario and validate the model if possible.",
+      "expected_output": "An automation workflow that translates an external Stripe-owned Event into an internal Subscription Event, preserving the partial-payment question as an attached open hotspot.",
+      "files": [],
+      "expectations": [
+        "Stripe is represented by an external system and an external bounded context that owns Payment Captured.",
+        "The workflow is an `automation` (no `translation` keyword exists) that consumes the external Event through canonical from flow, preferably via a pending-work read model, so tools derive it as a translation.",
+        "The internal Command and Event use Subscriptions domain language and are connected in canonical direction. The internal event is not a linked copy of the Stripe event.",
+        "payment_id, subscription_id, amount, and currency are represented with reusable typed contracts and traceable flow. No mapping, linked_copy, or storyline attribute is introduced.",
+        "A pattern-correct success scenario is present: Given the external event, When the processor or command, Then the internal event.",
+        "The partial-payment uncertainty is an open hotspot attached to a relevant workflow or element; no activation rule is fabricated."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review and replace the following idea with a valid `order-status.em.hcl` model: 'Create a query command called GetOrderStatus. It reads OrderPlaced, OrderShipped, and OrderDelivered and returns OrderStatusDto. The screen points backward to the DTO.' Model what an authenticated customer needs to see, include order_id and status fields, and add scenarios for placed and delivered orders. Keep the business behavior but correct Event Modeling and HCL mistakes. Validate if tooling is available.",
+      "expected_output": "A State View model with catalog Events, a question-driven Read Model, canonical Event-to-Read-Model-to-Screen flow, and Given/Then scenarios without a fake query Command.",
+      "files": [],
+      "expectations": [
+        "The model contains no Query concept, fake GetOrderStatus Command, query attribute, or storyline block.",
+        "OrderPlaced, OrderShipped, and OrderDelivered are past-tense Events owned by a bounded context, each declared once.",
+        "The State View Read Model asks one concrete order-status question and consumes Events using from.",
+        "The Read Model points to the Screen with to; the Screen does not point backward with from and does not issue multiple commands.",
+        "Both scenarios use Given Event then Read Model and contain no When step.",
+        "order_id and status have valid field typing and their Read Model provenance is visible without a mapping attribute."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "This model already has state_change \"place_order\" with status = \"done\" and a created state_view \"view_order\". Add the supplied loyalty_id field to the view only. Do not reopen completed work. The place-order screen currently issues both place_order and apply_coupon; leave that screen locked, but say what is wrong with it.",
+      "expected_output": "The created state view gains loyalty_id with visible provenance. The done state_change is unchanged. The reply names the bed on the locked screen without editing it.",
+      "files": [],
+      "expectations": [
+        "The done workflow is not modified and its status is not changed.",
+        "The created state view is updated with loyalty_id and a traceable source or an explicit gap. No mapping DSL, linked_copy, or storyline attribute is added.",
+        "The reply identifies the locked screen's two commands as a bed, meaning any second command, and does not silently split that locked workflow.",
+        "No implementation code is generated."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Split `clinic.em.hcl` into a folder model `clinic/` so that each team can own its own workflows. The file has a `clinic` bounded context, a `receptionist` actor, the workflows `register_pet`, `pet_directory`, and `notify_owner`, one chapter that lists them, and an open hotspot on the notify_owner processor. Keep the board order the same and validate the folder if the CLI is available.",
+      "expected_output": "A folder of member `.em.hcl` files with the same blocks and the same `board`, which validates as one folder model with no EM014, EM015, or EM016 diagnostic.",
+      "files": [],
+      "expectations": [
+        "Every block moves whole into a file directly in `clinic/`. No block spans two files, and no `include` or `import` block is invented.",
+        "The bounded context with all its events, aggregates, and field types is in one file.",
+        "The single `board` block moves whole into one file and keeps its workflow list unchanged, so the story order is the same. The chapter keeps its membership; no workflow is in two chapters.",
+        "File names may use a prefix for human reading order, but the reply does not rely on file order for the board. No ID is declared twice across files.",
+        "Each member file is formatted with `emhcl fmt -w <file>` because fmt refuses a folder, and the folder is validated with `emhcl validate clinic` (emhcl v0.12.0 or newer).",
+        "The open hotspot stays open, and the reply does not call the model implementation-ready."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "`legacy.em.hcl` is a v0.4.0 model: it has no board, several fields such as `field \"order_id\" {}` that rely on a matching field_type, and a `translation \"import_partner_order\"` workflow. `emhcl validate` now fails. Bring it to the current language without changing its meaning and validate it if the CLI is available.",
+      "expected_output": "The model is converted with `emhcl migrate -w legacy.em.hcl`, then validated; the reply reports the migrate report lines and the validation result.",
+      "files": [],
+      "expectations": [
+        "The agent runs `emhcl migrate` (first without `-w` or reading its report) rather than hand-editing the v0.4.0 constructs.",
+        "The result has one `board` listing every workflow in the former order, an explicit qualified `field_type.<context>.<id>` type on each formerly typeless field, and `automation` in place of `translation`.",
+        "Titles written by migrate are kept unless the user asks to remove them; no title is invented beyond them.",
+        "The migrated model is validated with `emhcl validate legacy.em.hcl` and the observed result is reported."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+# Reusable GitHub Actions workflow of the emhcl plugin (DP5).
+#
+# It gives a model repository two jobs:
+#   emhcl-validate  validates the model with merge_profile from .emhcl.yml, on
+#                   pull requests and on the default branch
+#   pages           renders the default branch to GitHub Pages
+#
+# This workflow names no emhcl version. Both jobs run install-emhcl.sh from the
+# same plugin tag, and that script installs the release that .emhcl.yml pins.
+#
+# Call it at a plugin tag, and pass the same tag as plugin_ref:
+#
+#   on:
+#     pull_request:
+#     push:
+#       branches: [main]
+#   jobs:
+#     model:
+#       uses: event-modeling-hcl/emhcl-plugin/.github/workflows/emhcl-model.yml@emhcl--v0.1.0
+#       with:
+#         plugin_ref: emhcl--v0.1.0
+#       permissions:
+#         contents: read
+#         pages: write
+#         id-token: write
+#
+# Then require the status check "model / emhcl-validate" and linear history on
+# the default branch, and set GitHub Pages to deploy from GitHub Actions.
+name: emhcl model
+
+on:
+  workflow_call:
+    inputs:
+      plugin_ref:
+        description: Tag of event-modeling-hcl/emhcl-plugin. Use the tag of the uses line.
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  emhcl-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the pinned emhcl
+        env:
+          PLUGIN_REF: ${{ inputs.plugin_ref }}
+        run: |
+          curl -fsSL "https://raw.githubusercontent.com/event-modeling-hcl/emhcl-plugin/${PLUGIN_REF}/plugins/emhcl/skills/em-collaborate/scripts/install-emhcl.sh" -o "$RUNNER_TEMP/install-emhcl.sh"
+          sh "$RUNNER_TEMP/install-emhcl.sh" --config .emhcl.yml --bin-dir "$RUNNER_TEMP/bin" >"$RUNNER_TEMP/emhcl-path"
+      - name: Validate with merge_profile
+        run: |
+          key() {
+            v=$(sed -n "s/^$1:[[:space:]]*//p" .emhcl.yml | head -n 1 | sed "s/[[:space:]]#.*$//; s/[[:space:]]*$//; s/^[\"']//; s/[\"']$//")
+            printf '%s\n' "${v:-$2}"
+          }
+          model_path=$(key model_path model)
+          profile=$(key merge_profile strict)
+          echo "emhcl validate --profile $profile $model_path"
+          "$(cat "$RUNNER_TEMP/emhcl-path")" validate --profile "$profile" "$model_path"
+
+  pages:
+    if: github.event_name == 'push' && github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the pinned emhcl
+        env:
+          PLUGIN_REF: ${{ inputs.plugin_ref }}
+        run: |
+          curl -fsSL "https://raw.githubusercontent.com/event-modeling-hcl/emhcl-plugin/${PLUGIN_REF}/plugins/emhcl/skills/em-collaborate/scripts/install-emhcl.sh" -o "$RUNNER_TEMP/install-emhcl.sh"
+          sh "$RUNNER_TEMP/install-emhcl.sh" --config .emhcl.yml --bin-dir "$RUNNER_TEMP/bin" >"$RUNNER_TEMP/emhcl-path"
+      - name: Render the default branch
+        run: |
+          model_path=$(sed -n "s/^model_path:[[:space:]]*//p" .emhcl.yml | head -n 1 | sed "s/[[:space:]]#.*$//; s/[[:space:]]*$//; s/^[\"']//; s/[\"']$//")
+          short_sha=$(printf '%s' "$GITHUB_SHA" | cut -c 1-8)
+          mkdir -p _site
+          "$(cat "$RUNNER_TEMP/emhcl-path")" diagram --title "$GITHUB_REPOSITORY $GITHUB_REF_NAME @ $short_sha" -o _site/index.html "${model_path:-model}"
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deploy
+        uses: actions/deploy-pages@v4
