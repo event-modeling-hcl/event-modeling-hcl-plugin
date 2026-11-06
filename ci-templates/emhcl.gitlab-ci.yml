@@ -12,7 +12,7 @@
 # Include it at a plugin tag, and pass the same tag as plugin_ref:
 #
 #   include:
-#     - remote: https://raw.githubusercontent.com/event-modeling-hcl/emhcl-plugin/emhcl--v0.1.0/ci-templates/emhcl.gitlab-ci.yml
+#     - remote: https://raw.githubusercontent.com/event-modeling-hcl/event-modeling-hcl-plugin/emhcl--v0.1.0/ci-templates/emhcl.gitlab-ci.yml
 #       inputs:
 #         plugin_ref: emhcl--v0.1.0
 #
@@ -22,7 +22,7 @@
 spec:
   inputs:
     plugin_ref:
-      description: Tag of github.com/event-modeling-hcl/emhcl-plugin. Use the tag of the include URL.
+      description: Tag of github.com/event-modeling-hcl/event-modeling-hcl-plugin. Use the tag of the include URL.
     image:
       description: Container image with a POSIX shell, tar, and sha256sum. The jobs add curl with apk or apt-get when it is missing.
       default: alpine:3.22
@@ -43,7 +43,7 @@ spec:
         elif command -v apt-get >/dev/null 2>&1; then apt-get update -qq && apt-get install -y -qq curl ca-certificates >/dev/null
         fi
       fi
-    - curl -fsSL "https://raw.githubusercontent.com/event-modeling-hcl/emhcl-plugin/${EMHCL_PLUGIN_REF}/plugins/emhcl/skills/em-collaborate/scripts/install-emhcl.sh" -o /tmp/install-emhcl.sh
+    - curl -fsSL "https://raw.githubusercontent.com/event-modeling-hcl/event-modeling-hcl-plugin/${EMHCL_PLUGIN_REF}/plugins/emhcl/skills/em-collaborate/scripts/install-emhcl.sh" -o /tmp/install-emhcl.sh
     - EMHCL=$(sh /tmp/install-emhcl.sh --config .emhcl.yml)
     - |
       # emhcl_key KEY DEFAULT prints the value of a flat key of .emhcl.yml.

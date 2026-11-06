@@ -1,4 +1,4 @@
-# emhcl plugins for Claude
+# Event Modeling HCL Plugin for Claude
 
 Two open-source Claude plugins for teams that keep an event model in
 [Event Modeling HCL](https://github.com/event-modeling-hcl/spec) (`.em.hcl`)
@@ -7,13 +7,13 @@ files:
 - `emhcl-skills` holds 32 method skills and the `event-modeling-hcl`
   language skill. The method skills discover, review, and plan business models.
   The language skill owns HCL syntax and emhcl tool operations.
-- `emhcl` lets each person on a team view, change, and review the model
+- `event-modeling-hcl-plugin` lets each person on a team view, change, and review the model
   through Claude. A change reaches the default branch only through a merge
   request in GitLab or GitHub, which a person reviews and merges. It installs
   `emhcl-skills` as a dependency.
 
 The plugins target specification v0.8.0 and emhcl v0.17.0 or newer.
-The existing `emhcl` plugin and the upstream language content use
+The `event-modeling-hcl-plugin` plugin and the upstream language content use
 Apache-2.0. Release of the restated method content awaits source-license review.
 See [contract/CREDITS.md](contract/CREDITS.md). A passing text-overlap scan
 does not establish license clearance.
@@ -29,7 +29,7 @@ does not establish license clearance.
 | `em-review` | Validates the head of an MR, lists the changed slices, and publishes a diagram | One comment |
 | `em-sync` | Republishes the shared team artifact from the default branch | No |
 
-In Cowork and Claude Code, run a command as `/emhcl:em-change`. In Claude chat,
+In Cowork and Claude Code, run a command as `/event-modeling-hcl-plugin:em-change`. In Claude chat,
 ask in plain words; Claude uses the matching procedure. The plugin never merges
 and never writes to the default branch.
 
@@ -38,12 +38,17 @@ and never writes to the default branch.
 Add the marketplace and install the plugins:
 
 ```sh
-claude plugin marketplace add event-modeling-hcl/emhcl-plugin
-claude plugin install emhcl@event-modeling-hcl
+claude plugin marketplace add event-modeling-hcl/event-modeling-hcl-plugin
+claude plugin install event-modeling-hcl-plugin@event-modeling-hcl
 ```
 
 The second command also installs `emhcl-skills`. To use only the skills,
 without the Git procedures, install `emhcl-skills@event-modeling-hcl`.
+
+If you installed the former `emhcl` plugin, uninstall it with
+`claude plugin uninstall emhcl@event-modeling-hcl`, then install
+`event-modeling-hcl-plugin@event-modeling-hcl`. The marketplace name remains
+`event-modeling-hcl`; the CLI remains `emhcl`.
 
 ## The method skills
 
@@ -104,7 +109,7 @@ GitLab, in `.gitlab-ci.yml`:
 
 ```yaml
 include:
-  - remote: https://raw.githubusercontent.com/event-modeling-hcl/emhcl-plugin/emhcl--v0.2.0/ci-templates/emhcl.gitlab-ci.yml
+  - remote: https://raw.githubusercontent.com/event-modeling-hcl/event-modeling-hcl-plugin/emhcl--v0.2.0/ci-templates/emhcl.gitlab-ci.yml
     inputs:
       plugin_ref: emhcl--v0.2.0
 ```
@@ -122,7 +127,7 @@ on:
     branches: [main]
 jobs:
   model:
-    uses: event-modeling-hcl/emhcl-plugin/.github/workflows/emhcl-model.yml@emhcl--v0.2.0
+    uses: event-modeling-hcl/event-modeling-hcl-plugin/.github/workflows/emhcl-model.yml@emhcl--v0.2.0
     with:
       plugin_ref: emhcl--v0.2.0
     permissions:
@@ -158,7 +163,7 @@ design as built: the design matrix, the contract of each part, and the
 residual risks.
 
 ```
-emhcl-plugin/
+event-modeling-hcl-plugin/
 ├── .claude-plugin/marketplace.json
 ├── plugins/emhcl/
 │   ├── .claude-plugin/plugin.json         # depends on emhcl-skills

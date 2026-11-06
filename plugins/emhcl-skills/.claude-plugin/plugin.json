@@ -7,7 +7,7 @@
     "name": "event-modeling-hcl",
     "url": "https://github.com/event-modeling-hcl"
   },
-  "homepage": "https://github.com/event-modeling-hcl/emhcl-plugin",
-  "repository": "https://github.com/event-modeling-hcl/emhcl-plugin",
+  "homepage": "https://github.com/event-modeling-hcl/event-modeling-hcl-plugin",
+  "repository": "https://github.com/event-modeling-hcl/event-modeling-hcl-plugin",
   "keywords": ["event-modeling", "hcl", "emhcl", "skills", "method"]
 }

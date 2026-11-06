@@ -147,7 +147,7 @@ If the folder already holds a binary that reports the pinned tag, the script ins
 
 ### DP2: language skill
 
-The skill `event-modeling-hcl` lives in the plugin `emhcl-skills` of this repository, the home of the emhcl agent skills. The plugin `emhcl` declares `emhcl-skills` as a dependency, so Claude Code installs both. Version 0.2.0 uses skill 3.1.0, for specification v0.8.0 and emhcl v0.17.0 or newer. The skill moved there unchanged from emhcl v0.17.0.
+The skill `event-modeling-hcl` lives in the plugin `emhcl-skills` of this repository, the home of the emhcl agent skills. The plugin `event-modeling-hcl-plugin` declares `emhcl-skills` as a dependency, so Claude Code installs both. Version 0.2.0 uses skill 3.1.0, for specification v0.8.0 and emhcl v0.17.0 or newer. The skill moved there unchanged from emhcl v0.17.0.
 
 | Item | Contract |
 | --- | --- |
@@ -369,13 +369,13 @@ A plugin eval loads only the MCP servers that the plugin declares, and this plug
 The repository differs from the plan in these points:
 
 - The plan names emhcl v0.13.0. Version 0.2.0 pins emhcl v0.17.0 and supports specification v0.8.0. `emhcl_min` is 0.17.0.
-- The plan vendors the language skill. Since 0.2.0, the skill lives in the plugin `emhcl-skills`, and `emhcl` depends on it.
+- The plan vendors the language skill. Since 0.2.0, the skill lives in the plugin `emhcl-skills`, and `event-modeling-hcl-plugin` depends on it.
 - The range guard is a separate script, `check-compatibility.sh`. It reads the version of the binary, not `.emhcl.yml`, so DP1 stays the only reader of the pin.
 - em-change and em-review compare models with `emhcl diff`, not with the block text. A block that only moved to another file is not a change.
 - The bindings name more tools than the plan table: `get_project`, `search_repositories`, and `delete_file`. em-setup also calls `get_mcp_server_version`. On GitLab before 19.5, read-mr uses `get_merge_request_diffs`.
 - The reusable GitHub workflow is part of 0.1.0. The plan put it in milestone M4.
 - em-view and em-validate run without `.emhcl.yml`, with a temporary pin.
-- A release tag has the form `emhcl--v<version>`, as `claude plugin tag` makes it.
+- A release tag has the form `event-modeling-hcl-plugin--v<version>`, as `claude plugin tag` makes it. Existing `emhcl--v<version>` tags remain unchanged.
 
 ## Paper-world discovery boundary
 

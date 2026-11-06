@@ -1,14 +1,14 @@
 {
-  "name": "emhcl",
-  "displayName": "Event Modeling HCL",
+  "name": "event-modeling-hcl-plugin",
+  "displayName": "Event Modeling HCL Plugin",
   "version": "0.2.0",
   "description": "View, change, and review a team event model in .em.hcl files through Claude. Changes reach the default branch only through a merge request in GitLab or GitHub.",
   "author": {
     "name": "event-modeling-hcl",
     "url": "https://github.com/event-modeling-hcl"
   },
-  "homepage": "https://github.com/event-modeling-hcl/emhcl-plugin",
-  "repository": "https://github.com/event-modeling-hcl/emhcl-plugin",
+  "homepage": "https://github.com/event-modeling-hcl/event-modeling-hcl-plugin",
+  "repository": "https://github.com/event-modeling-hcl/event-modeling-hcl-plugin",
   "license": "Apache-2.0",
   "keywords": ["event-modeling", "hcl", "emhcl", "gitlab", "github", "merge-request"],
   "dependencies": ["emhcl-skills"]

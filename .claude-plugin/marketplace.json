@@ -7,7 +7,7 @@
   },
   "plugins": [
     {
-      "name": "emhcl",
+      "name": "event-modeling-hcl-plugin",
       "source": "./plugins/emhcl",
       "description": "View, change, and review a team event model in .em.hcl files through Claude. Changes reach the default branch only through a merge request."
     },

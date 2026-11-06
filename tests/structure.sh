@@ -38,9 +38,9 @@ done
 pass "front matter checked for each skill and command"
 
 # FR1 and DP5: no CI template names an emhcl version.
-# Plugin tags such as emhcl--v0.1.0 in the usage comments are not emhcl versions.
+# Plugin release tags in usage comments are not emhcl CLI versions.
 templates="$root/ci-templates/emhcl.gitlab-ci.yml $root/.github/workflows/emhcl-model.yml"
-if grep -nE 'emhcl_version|[0-9]+\.[0-9]+\.[0-9]+|eventmodeling-hcl/releases|cmd/emhcl@' $templates | grep -v 'emhcl--v'; then
+if grep -nE 'emhcl_version|[0-9]+\.[0-9]+\.[0-9]+|eventmodeling-hcl/releases|cmd/emhcl@' $templates | grep -vE '(emhcl|event-modeling-hcl-plugin)--v'; then
 	fail "a CI template names an emhcl version"
 else pass "no CI template names an emhcl version"; fi
 
@@ -55,16 +55,16 @@ for cfg in "$root/examples/pet-clinic/.emhcl.yml"; do
 done
 
 # The marketplace entries and the manifests agree on the plugin names.
-if grep -q '"name": "emhcl"' "$root/.claude-plugin/marketplace.json" && grep -q '"name": "emhcl"' "$plugin/.claude-plugin/plugin.json" &&
+if grep -q '"name": "event-modeling-hcl-plugin"' "$root/.claude-plugin/marketplace.json" && grep -q '"name": "event-modeling-hcl-plugin"' "$plugin/.claude-plugin/plugin.json" &&
 	grep -q '"name": "emhcl-skills"' "$root/.claude-plugin/marketplace.json" && grep -q '"name": "emhcl-skills"' "$skills_plugin/.claude-plugin/plugin.json"; then
 	pass "marketplace entries and manifest names agree"
 else fail "marketplace entries and manifest names agree"; fi
 
-# DP2: emhcl reaches the language skill only through its dependency on emhcl-skills.
+# DP2: the main plugin reaches the language skill only through its dependency on emhcl-skills.
 if grep -q '"dependencies": \["emhcl-skills"\]' "$plugin/.claude-plugin/plugin.json" &&
 	[ -f "$skills_plugin/skills/event-modeling-hcl/SKILL.md" ] && [ ! -e "$plugin/skills/event-modeling-hcl" ]; then
-	pass "emhcl depends on emhcl-skills for event-modeling-hcl"
-else fail "emhcl depends on emhcl-skills for event-modeling-hcl"; fi
+	pass "event-modeling-hcl-plugin depends on emhcl-skills for event-modeling-hcl"
+else fail "event-modeling-hcl-plugin depends on emhcl-skills for event-modeling-hcl"; fi
 
 # DP0: the contract copies in the method skills equal contract/.
 if sh "$root/scripts/build-contract.sh" --check >/dev/null; then

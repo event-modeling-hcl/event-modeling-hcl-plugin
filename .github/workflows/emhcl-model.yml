@@ -16,7 +16,7 @@
 #       branches: [main]
 #   jobs:
 #     model:
-#       uses: event-modeling-hcl/emhcl-plugin/.github/workflows/emhcl-model.yml@emhcl--v0.1.0
+#       uses: event-modeling-hcl/event-modeling-hcl-plugin/.github/workflows/emhcl-model.yml@emhcl--v0.1.0
 #       with:
 #         plugin_ref: emhcl--v0.1.0
 #       permissions:
@@ -32,7 +32,7 @@ on:
   workflow_call:
     inputs:
       plugin_ref:
-        description: Tag of event-modeling-hcl/emhcl-plugin. Use the tag of the uses line.
+        description: Tag of event-modeling-hcl/event-modeling-hcl-plugin. Use the tag of the uses line.
         required: true
         type: string
 
@@ -48,7 +48,7 @@ jobs:
         env:
           PLUGIN_REF: ${{ inputs.plugin_ref }}
         run: |
-          curl -fsSL "https://raw.githubusercontent.com/event-modeling-hcl/emhcl-plugin/${PLUGIN_REF}/plugins/emhcl/skills/em-collaborate/scripts/install-emhcl.sh" -o "$RUNNER_TEMP/install-emhcl.sh"
+          curl -fsSL "https://raw.githubusercontent.com/event-modeling-hcl/event-modeling-hcl-plugin/${PLUGIN_REF}/plugins/emhcl/skills/em-collaborate/scripts/install-emhcl.sh" -o "$RUNNER_TEMP/install-emhcl.sh"
           sh "$RUNNER_TEMP/install-emhcl.sh" --config .emhcl.yml --bin-dir "$RUNNER_TEMP/bin" >"$RUNNER_TEMP/emhcl-path"
       - name: Validate with merge_profile
         run: |
@@ -77,7 +77,7 @@ jobs:
         env:
           PLUGIN_REF: ${{ inputs.plugin_ref }}
         run: |
-          curl -fsSL "https://raw.githubusercontent.com/event-modeling-hcl/emhcl-plugin/${PLUGIN_REF}/plugins/emhcl/skills/em-collaborate/scripts/install-emhcl.sh" -o "$RUNNER_TEMP/install-emhcl.sh"
+          curl -fsSL "https://raw.githubusercontent.com/event-modeling-hcl/event-modeling-hcl-plugin/${PLUGIN_REF}/plugins/emhcl/skills/em-collaborate/scripts/install-emhcl.sh" -o "$RUNNER_TEMP/install-emhcl.sh"
           sh "$RUNNER_TEMP/install-emhcl.sh" --config .emhcl.yml --bin-dir "$RUNNER_TEMP/bin" >"$RUNNER_TEMP/emhcl-path"
       - name: Render the default branch
         run: |

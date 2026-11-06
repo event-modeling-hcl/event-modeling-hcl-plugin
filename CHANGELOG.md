@@ -1,12 +1,19 @@
 # Changelog
 
-This file records the releases of the emhcl plugin for Claude. A release tag
-has the form `emhcl--v<version>`, as `claude plugin tag` makes it.
+This file records the releases of Event Modeling HCL Plugin for Claude. New
+release tags have the form `event-modeling-hcl-plugin--v<version>`, as
+`claude plugin tag` makes them. Existing `emhcl--v<version>` tags remain unchanged.
 
 ## [Unreleased]
 
 ### Changed
 
+- Rename the main plugin to `event-modeling-hcl-plugin` and update repository
+  URLs to `event-modeling-hcl/event-modeling-hcl-plugin`. Reinstall with
+  `claude plugin install event-modeling-hcl-plugin@event-modeling-hcl` after
+  uninstalling `emhcl@event-modeling-hcl`. Commands now use the namespace
+  `/event-modeling-hcl-plugin:`. The marketplace, `emhcl-skills`, and CLI names
+  remain unchanged.
 - Paper-world discovery now includes questions about information, decisions,
   handoffs, corrections, and delays in the event and workshop skills.
 - Shared discovery rules retain source evidence, actual system actors, and

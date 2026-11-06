@@ -30,7 +30,7 @@ reaches the default branch only through a merge request (MR) that a person
 reviews and merges in GitLab or GitHub.
 
 The language itself belongs to the skill `event-modeling-hcl` of the plugin
-`emhcl-skills`. The plugin `emhcl` installs `emhcl-skills` as a dependency.
+`emhcl-skills`. The plugin `event-modeling-hcl-plugin` installs `emhcl-skills` as a dependency.
 Load `event-modeling-hcl` before you write, repair, or explain `.em.hcl` text.
 This skill adds only the team procedures.
 
@@ -61,7 +61,7 @@ This skill adds only the team procedures.
 ## Select the procedure
 
 Find the procedure that matches the request, read its file, and follow it in
-order. A command such as `/emhcl:em-change` names the procedure directly.
+order. A command such as `/event-modeling-hcl-plugin:em-change` names the procedure directly.
 
 | The person wants to | Procedure |
 | --- | --- |
