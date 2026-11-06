@@ -9,7 +9,7 @@ read a key with one `sed` command.
 
 ```yaml
 # The owner of each key is in brackets. Other parts only read the key.
-emhcl_version: 0.16.0            # [DP1] emhcl release for Claude and CI
+emhcl_version: 0.17.0            # [DP1] emhcl release for Claude and CI
 model_path: model                # [DP3] one folder; emhcl reads only the .em.hcl files directly in it
 branch_prefix: model/            # [DP3] prefix of each new branch
 mr_labels: [event-model]         # [DP3] labels on each new MR

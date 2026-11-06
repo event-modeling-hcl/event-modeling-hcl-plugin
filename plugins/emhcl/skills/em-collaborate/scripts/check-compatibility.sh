@@ -1,6 +1,6 @@
 #!/bin/sh
 # check-compatibility.sh compares an installed emhcl with the range that the
-# vendored skill supports (the FR2 and DP1 cell of the design matrix).
+# skill event-modeling-hcl supports (the FR2 and DP1 cell of the design matrix).
 #
 # Usage: check-compatibility.sh <path to the emhcl binary>
 #

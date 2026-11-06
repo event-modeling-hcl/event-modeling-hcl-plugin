@@ -13,9 +13,10 @@ description: >-
 compatibility: >-
   Needs the GitLab MCP server (GitLab 19.4 or later) or the GitHub MCP server,
   a shell with curl or go, and the emhcl release that the model repository
-  pins in .emhcl.yml. Works with the vendored event-modeling-hcl skill.
+  pins in .emhcl.yml. Needs the event-modeling-hcl skill of the plugin
+  emhcl-skills, which the plugin emhcl installs as a dependency.
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 allowed-tools:
   - Bash(sh ${CLAUDE_SKILL_DIR}/scripts/install-emhcl.sh *)
   - Bash(sh ${CLAUDE_SKILL_DIR}/scripts/check-compatibility.sh *)
@@ -28,9 +29,10 @@ event model through Claude. The model lives in a Git repository. A change
 reaches the default branch only through a merge request (MR) that a person
 reviews and merges in GitLab or GitHub.
 
-The language itself belongs to the skill `event-modeling-hcl`, which this
-plugin copies without change from emhcl. Load that skill before you write,
-repair, or explain `.em.hcl` text. This skill adds only the team procedures.
+The language itself belongs to the skill `event-modeling-hcl` of the plugin
+`emhcl-skills`. The plugin `emhcl` installs `emhcl-skills` as a dependency.
+Load `event-modeling-hcl` before you write, repair, or explain `.em.hcl` text.
+This skill adds only the team procedures.
 
 ## Rules that always apply
 
@@ -131,7 +133,7 @@ path `EMHCL`. The installer downloads the pinned release from GitHub and
 checks its SHA-256 sum. If the download fails, it uses `go install`. Tell the
 person once that it downloads emhcl from GitHub.
 
-Then check the range of the vendored skill:
+Then check the range of the skill `event-modeling-hcl`:
 
 ```sh
 sh ${CLAUDE_SKILL_DIR}/scripts/check-compatibility.sh "$EMHCL"
@@ -169,7 +171,7 @@ Procedure: em-change
 Repository: acme/orders
 Branch: main
 Commit: 1a2b3c4d
-emhcl: v0.16.0
+emhcl: v0.17.0
 Ran: emhcl validate --profile valid <model folder> => exit 0
 Ran: emhcl validate --profile strict <model folder> => exit 1 (EM406 x1)
 Artifact: https://claude.ai/... (share it: Share > Anyone at <organization>)
