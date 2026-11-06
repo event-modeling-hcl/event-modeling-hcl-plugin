@@ -84,7 +84,7 @@ cat >"$tmp/compatibility.md" <<EOF
 The script \`scripts/sync-upstream.sh\` writes this file. Do not edit it by
 hand.
 
-The skill \`event-modeling-hcl\` of the plugin \`emhcl-skills\` supports each
+The skill \`event-modeling-hcl\` of the plugin \`event-modeling-skills\` supports each
 emhcl release from \`emhcl_min\` on. The plugin release was tested with
 \`emhcl_max_tested\`, which is also the tag of the example model. The script
 \`check-compatibility.sh\` reads these keys.

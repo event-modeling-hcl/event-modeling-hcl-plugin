@@ -1,6 +1,6 @@
 # Credits and source license
 
-The method contract (`contract/method.md`), its HCL binding, and the 32 method skills of the plugin `emhcl-skills` restate ideas from 29 Event Modeling skills that were collected in `tmp/_to_use/` of this repository. The method skills do not name their sources, because no method skill names another skill. This file records the sources instead.
+The method contract (`contract/method.md`), its HCL binding, and the 32 method skills of the plugin `event-modeling-skills` restate ideas from 29 Event Modeling skills that were collected in `tmp/_to_use/` of this repository. The method skills do not name their sources, because no method skill names another skill. This file records the sources instead.
 
 The license of the 29 source skills is unknown. Before release, run `scripts/check-source-overlap.sh` and resolve the source-license question. The script scans the contract, method skills, examples, and plugin evals for matching runs of eight words. A passing result is a text comparison, not legal clearance. Until the license question is resolved, do not describe the method content as cleared for release under Apache-2.0.
 
@@ -32,7 +32,7 @@ K12 also uses the step order and gates of `eventmodeling-orchestrating-event-mod
 
 ## Method skills
 
-The names below are short names of the skills in `emhcl-skills`, without the prefix `eventmodeling-`. The sources are folder names in `tmp/_to_use/`.
+The names below are short names of the skills in `event-modeling-skills`, without the prefix `eventmodeling-`. The sources are folder names in `tmp/_to_use/`.
 
 | Skill | Ideas restated from |
 | --- | --- |

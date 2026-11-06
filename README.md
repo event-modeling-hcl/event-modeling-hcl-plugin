@@ -4,13 +4,13 @@ Two open-source Claude plugins for teams that keep an event model in
 [Event Modeling HCL](https://github.com/event-modeling-hcl/spec) (`.em.hcl`)
 files:
 
-- `emhcl-skills` holds 32 method skills and the `event-modeling-hcl`
+- `event-modeling-skills` holds 32 method skills and the `event-modeling-hcl`
   language skill. The method skills discover, review, and plan business models.
   The language skill owns HCL syntax and emhcl tool operations.
 - `event-modeling-hcl-plugin` lets each person on a team view, change, and review the model
   through Claude. A change reaches the default branch only through a merge
   request in GitLab or GitHub, which a person reviews and merges. It installs
-  `emhcl-skills` as a dependency.
+  `event-modeling-skills` as a dependency.
 
 The plugins target specification v0.8.0 and emhcl v0.17.0 or newer.
 The `event-modeling-hcl-plugin` plugin and the upstream language content use
@@ -42,13 +42,18 @@ claude plugin marketplace add event-modeling-hcl/event-modeling-hcl-plugin
 claude plugin install event-modeling-hcl-plugin@event-modeling-hcl
 ```
 
-The second command also installs `emhcl-skills`. To use only the skills,
-without the Git procedures, install `emhcl-skills@event-modeling-hcl`.
+The second command also installs `event-modeling-skills`. To use only the skills,
+without the Git procedures, install `event-modeling-skills@event-modeling-hcl`.
 
 If you installed the former `emhcl` plugin, uninstall it with
 `claude plugin uninstall emhcl@event-modeling-hcl`, then install
 `event-modeling-hcl-plugin@event-modeling-hcl`. The marketplace name remains
 `event-modeling-hcl`; the CLI remains `emhcl`.
+
+If you installed the former `emhcl-skills` plugin, uninstall it with
+`claude plugin uninstall emhcl-skills@event-modeling-hcl`, then install
+`event-modeling-skills@event-modeling-hcl`. The source folder remains
+`plugins/emhcl-skills/`; existing release tags remain unchanged.
 
 ## The method skills
 
@@ -152,7 +157,7 @@ Five design parameters each control one requirement:
 | Part | File | Controls |
 | --- | --- | --- |
 | DP1 validator pin | `plugins/emhcl/skills/em-collaborate/scripts/install-emhcl.sh` | The emhcl release in Claude and in CI |
-| DP2 language skill | `plugins/emhcl-skills/skills/event-modeling-hcl/`, `references/compatibility.md` | The language rules, from the plugin `emhcl-skills`, and the emhcl range that they support |
+| DP2 language skill | `plugins/emhcl-skills/skills/event-modeling-hcl/`, `references/compatibility.md` | The language rules, from the plugin `event-modeling-skills`, and the emhcl range that they support |
 | DP3 Git port | `plugins/emhcl/skills/em-collaborate/references/git-operations.md` | Seven Git operations, bound to GitLab and GitHub tools |
 | DP4 diagram publisher | `plugins/emhcl/skills/em-collaborate/references/diagrams.md` | Diagrams as Claude artifacts |
 | DP5 CI templates | `ci-templates/emhcl.gitlab-ci.yml`, `.github/workflows/emhcl-model.yml` | The merge gate and the canonical diagram |
@@ -166,7 +171,7 @@ residual risks.
 event-modeling-hcl-plugin/
 ├── .claude-plugin/marketplace.json
 ├── plugins/emhcl/
-│   ├── .claude-plugin/plugin.json         # depends on emhcl-skills
+│   ├── .claude-plugin/plugin.json         # depends on event-modeling-skills
 │   ├── skills/em-collaborate/
 │   │   ├── SKILL.md
 │   │   ├── references/                    # procedures, git-operations, diagrams, configuration, compatibility

@@ -12,8 +12,12 @@ release tags have the form `event-modeling-hcl-plugin--v<version>`, as
   URLs to `event-modeling-hcl/event-modeling-hcl-plugin`. Reinstall with
   `claude plugin install event-modeling-hcl-plugin@event-modeling-hcl` after
   uninstalling `emhcl@event-modeling-hcl`. Commands now use the namespace
-  `/event-modeling-hcl-plugin:`. The marketplace, `emhcl-skills`, and CLI names
-  remain unchanged.
+  `/event-modeling-hcl-plugin:`. The marketplace and CLI names remain unchanged.
+- Rename `emhcl-skills` to `event-modeling-skills` and update the main plugin's
+  dependency. Uninstall `emhcl-skills@event-modeling-hcl`, then install
+  `event-modeling-skills@event-modeling-hcl`. New skills release tags use
+  `event-modeling-skills--v<version>`; the source folder and existing tags remain
+  unchanged.
 - Paper-world discovery now includes questions about information, decisions,
   handoffs, corrections, and delays in the event and workshop skills.
 - Shared discovery rules retain source evidence, actual system actors, and

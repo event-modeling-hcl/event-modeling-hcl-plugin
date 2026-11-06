@@ -1,7 +1,7 @@
 # Contributing
 
 Thank you for helping. This repository holds two plugins: `event-modeling-hcl-plugin`, which adds
-team procedures on top of emhcl, and `emhcl-skills`, the home of the emhcl
+team procedures on top of emhcl, and `event-modeling-skills`, the home of the emhcl
 agent skills. Put each change in the part that owns it:
 
 | Change | Where |
@@ -69,7 +69,7 @@ servers that the plugin declares, and `emhcl` declares none. So the evals
 cover language tasks, method skills, and safety rules. The manual test below
 covers the Git procedures. An eval of a plugin path loads only that plugin, so
 the evals of `event-modeling-hcl` and the method skills live in
-`emhcl-skills`.
+`event-modeling-skills`.
 
 ## Update to a new emhcl release
 
@@ -95,7 +95,7 @@ to use source material.
 3. Update the plugin tag in the include examples of `README.md`.
 4. Run `claude plugin tag plugins/emhcl` and `claude plugin tag
    plugins/emhcl-skills`, which make the tags `event-modeling-hcl-plugin--v<version>` and
-   `emhcl-skills--v<version>`, and push them.
+   `event-modeling-skills--v<version>`, and push them.
 
 ## Manual test for each release
 

@@ -56,15 +56,15 @@ done
 
 # The marketplace entries and the manifests agree on the plugin names.
 if grep -q '"name": "event-modeling-hcl-plugin"' "$root/.claude-plugin/marketplace.json" && grep -q '"name": "event-modeling-hcl-plugin"' "$plugin/.claude-plugin/plugin.json" &&
-	grep -q '"name": "emhcl-skills"' "$root/.claude-plugin/marketplace.json" && grep -q '"name": "emhcl-skills"' "$skills_plugin/.claude-plugin/plugin.json"; then
+	grep -q '"name": "event-modeling-skills"' "$root/.claude-plugin/marketplace.json" && grep -q '"name": "event-modeling-skills"' "$skills_plugin/.claude-plugin/plugin.json"; then
 	pass "marketplace entries and manifest names agree"
 else fail "marketplace entries and manifest names agree"; fi
 
-# DP2: the main plugin reaches the language skill only through its dependency on emhcl-skills.
-if grep -q '"dependencies": \["emhcl-skills"\]' "$plugin/.claude-plugin/plugin.json" &&
+# DP2: the main plugin reaches the language skill only through its dependency on event-modeling-skills.
+if grep -q '"dependencies": \["event-modeling-skills"\]' "$plugin/.claude-plugin/plugin.json" &&
 	[ -f "$skills_plugin/skills/event-modeling-hcl/SKILL.md" ] && [ ! -e "$plugin/skills/event-modeling-hcl" ]; then
-	pass "event-modeling-hcl-plugin depends on emhcl-skills for event-modeling-hcl"
-else fail "event-modeling-hcl-plugin depends on emhcl-skills for event-modeling-hcl"; fi
+	pass "event-modeling-hcl-plugin depends on event-modeling-skills for event-modeling-hcl"
+else fail "event-modeling-hcl-plugin depends on event-modeling-skills for event-modeling-hcl"; fi
 
 # DP0: the contract copies in the method skills equal contract/.
 if sh "$root/scripts/build-contract.sh" --check >/dev/null; then

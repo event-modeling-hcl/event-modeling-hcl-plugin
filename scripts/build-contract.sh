@@ -1,6 +1,6 @@
 #!/bin/sh
 # build-contract.sh publishes installable method, permission, and HCL references
-# for the emhcl-skills plugin (DP0).
+# for the event-modeling-skills plugin (DP0).
 #
 # Usage: scripts/build-contract.sh [--check]
 #

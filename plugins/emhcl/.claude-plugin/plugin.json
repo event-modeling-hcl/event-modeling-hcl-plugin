@@ -11,5 +11,5 @@
   "repository": "https://github.com/event-modeling-hcl/event-modeling-hcl-plugin",
   "license": "Apache-2.0",
   "keywords": ["event-modeling", "hcl", "emhcl", "gitlab", "github", "merge-request"],
-  "dependencies": ["emhcl-skills"]
+  "dependencies": ["event-modeling-skills"]
 }

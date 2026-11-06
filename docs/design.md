@@ -147,19 +147,19 @@ If the folder already holds a binary that reports the pinned tag, the script ins
 
 ### DP2: language skill
 
-The skill `event-modeling-hcl` lives in the plugin `emhcl-skills` of this repository, the home of the emhcl agent skills. The plugin `event-modeling-hcl-plugin` declares `emhcl-skills` as a dependency, so Claude Code installs both. Version 0.2.0 uses skill 3.1.0, for specification v0.8.0 and emhcl v0.17.0 or newer. The skill moved there unchanged from emhcl v0.17.0.
+The skill `event-modeling-hcl` lives in the plugin `event-modeling-skills` of this repository, the home of the emhcl agent skills. The plugin `event-modeling-hcl-plugin` declares `event-modeling-skills` as a dependency, so Claude Code installs both. Version 0.2.0 uses skill 3.1.0, for specification v0.8.0 and emhcl v0.17.0 or newer. The skill moved there unchanged from emhcl v0.17.0.
 
 | Item | Contract |
 | --- | --- |
 | Input | The front matter of the skill (`version`, `spec_version`, `emhcl_min`), and an upstream tag for the example, through `scripts/sync-upstream.sh`. |
 | Output | The example model `examples/pet-clinic/model` and `compatibility.md`. |
-| Owned state | The language rules, the authoring rules, and the repair loop, in `emhcl-skills`. `compatibility.md` records `upstream_tag`, `skill_version`, `spec_version`, `emhcl_min`, and `emhcl_max_tested`. |
+| Owned state | The language rules, the authoring rules, and the repair loop, in `event-modeling-skills`. `compatibility.md` records `upstream_tag`, `skill_version`, `spec_version`, `emhcl_min`, and `emhcl_max_tested`. |
 | Invariant | Nobody edits `compatibility.md` or the example by hand. `sync-upstream.sh --check <tag>` exits 1 when a file differs from the tag and the skill. With `EMHCL` set, it also exits 1 when `spec_version` differs from the binary. |
 | Range guard | `check-compatibility.sh <binary>` compares the version of the binary with `emhcl_min` and `emhcl_max_tested`. |
 
 The repair loop belongs to the skill `event-modeling-hcl`. It has one circuit breaker for each diagnostic code on one element, with a limit of two failed repairs. The plugin uses that limit and defines no retry count of its own.
 
-An eval of the path `plugins/emhcl` loads only that plugin, so the language evals live in `emhcl-skills`. The method skills and their authorities are described in [Skill boundaries and authorities](#skill-boundaries-and-authorities).
+An eval of the path `plugins/emhcl` loads only that plugin, so the language evals live in `event-modeling-skills`. The method skills and their authorities are described in [Skill boundaries and authorities](#skill-boundaries-and-authorities).
 
 ### DP3: Git port
 
@@ -355,9 +355,9 @@ The tests in `tests/` and the eval suite in `plugins/emhcl/evals/` test the clai
 | Each command names an existing procedure, and no other command exists. | `tests/structure.sh` |
 | No procedure names a merge tool. | `tests/structure.sh` |
 | The example and `compatibility.md` equal the upstream tag and the skill. | `tests/structure.sh`, through `sync-upstream.sh --check` |
-| `emhcl` depends on `emhcl-skills`, which holds `event-modeling-hcl`. | `tests/structure.sh` |
+| `event-modeling-hcl-plugin` depends on `event-modeling-skills`, which holds `event-modeling-hcl`. | `tests/structure.sh` |
 | The manifests are valid. | `claude plugin validate --strict`, in `tests/structure.sh` |
-| A written model has a board, a state change, and typed fields. | Eval `author-slice`, in `emhcl-skills` |
+| A written model has a board, a state change, and typed fields. | Eval `author-slice`, in `event-modeling-skills` |
 | Claude explains CI diagnostics and does not invent a rule. | Eval `explain-ci-diagnostics` |
 | Claude declines to merge. | Eval `never-merges` |
 | Without a connector, Claude stops and names the missing connector. | Eval `view-without-connector` |
@@ -369,7 +369,7 @@ A plugin eval loads only the MCP servers that the plugin declares, and this plug
 The repository differs from the plan in these points:
 
 - The plan names emhcl v0.13.0. Version 0.2.0 pins emhcl v0.17.0 and supports specification v0.8.0. `emhcl_min` is 0.17.0.
-- The plan vendors the language skill. Since 0.2.0, the skill lives in the plugin `emhcl-skills`, and `event-modeling-hcl-plugin` depends on it.
+- The plan vendors the language skill. Since 0.2.0, the skill lives in the skills plugin, now named `event-modeling-skills`, and `event-modeling-hcl-plugin` depends on it.
 - The range guard is a separate script, `check-compatibility.sh`. It reads the version of the binary, not `.emhcl.yml`, so DP1 stays the only reader of the pin.
 - em-change and em-review compare models with `emhcl diff`, not with the block text. A block that only moved to another file is not a change.
 - The bindings name more tools than the plan table: `get_project`, `search_repositories`, and `delete_file`. em-setup also calls `get_mcp_server_version`. On GitLab before 19.5, read-mr uses `get_merge_request_diffs`.
