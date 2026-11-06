@@ -8,7 +8,7 @@ metadata:
 
 # Assigning ownership
 
-A system mirrors the structure of the teams that build it (Conway's law). This skill uses that law to give each element of the model one owner team, so that each team can build and deploy its part with little coordination. A team and a system name the same boundary. The skill writes the ownership part.
+This skill gives each element one responsible team. Team ownership and system boundaries are separate facts. Use explicit event contracts to expose their dependencies. Do not assume that a team needs its own system or deployment. The skill writes the ownership part.
 
 ## Before you start
 
@@ -39,7 +39,7 @@ Ask these questions under K9, and only when no source answers them:
 5. Give each command the owner team of the events that it produces. If its events belong to two teams, write a request (K8) on the command, concerning commands.
 6. Give each read model to the team that maintains the screen or the automation that reads it.
 7. Give each automation a home team. Use the automation section below.
-8. Give the translation step of each event from another system to the team that owns that integration. If such an event reaches an internal element with no translation step, write a request (K8) on that element, concerning automations.
+8. Give each translation step to the receiving team that owns it. Check facts from other teams as well as outside systems under K3. If a local worker uses a foreign fact without translation, request the automations part. Do not mark an internal context external only to satisfy a tool.
 9. Find the links between teams. For each pair of teams, name the triggering event, the reacting command, automation, or read model, and the resulting event.
 10. If a team uses the state of another team in a way other than an event, write a request (K8) on that element, concerning its part.
 11. Look for cycles between teams. A cycle exists when team A uses an event of team B, and team B uses an event of team A, directly or through other teams. Report each cycle to the person. Do not break it here.

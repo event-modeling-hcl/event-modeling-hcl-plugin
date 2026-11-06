@@ -16,9 +16,9 @@ board {
 }
 ```
 
-These examples encode the business patterns owned by
-[event-modeling](../../event-modeling/SKILL.md). Use that skill for pattern
-selection and business-quality review. This reference owns HCL examples only.
+These examples show HCL shapes, not business pattern selection. Use
+[the responsibility routing](../SKILL.md#route-business-work-to-its-owner)
+for business decisions and business-quality review. This reference owns HCL examples only.
 Do not add `linked_copy`, `storyline`, or `mapping` attributes. Scenario grammar
 here is HCL, not the canvas automation form with an empty When and a Then
 command or no dispatch. Every `field` carries an explicit `type`.
@@ -115,9 +115,11 @@ State View scenarios never have `when` and never use `query`.
 
 ## Automation
 
-Methodology shape: a pending-work read model, then the processor. The
-validator also accepts `processor.from = [event…]` with no read model. Prefer
-the read model; it is not a hard error to omit it.
+A complete business automation has a pending-work read model, then the
+processor. The validator also accepts `processor.from = [event…]` without
+a read model. Use that form only for an explicit minimal-legal-HCL request.
+Record the omitted read model as a method gap. Valid syntax does not make
+that automation a complete methodological model.
 
 ```hcl
 automation "request_order_confirmation" {
@@ -159,16 +161,17 @@ automation "request_order_confirmation" {
 ```
 
 The read model is a queue of pending items, not a status flag on the entity.
-A completion event is added to that read model's `from` list; do not reverse
-an edge, and do not invent a closer attribute. This automation consumes only
-internal events; one that consumes external events is a translation (below).
-The first scenario is the action form: `when` is the processor or the command
-it issues, and `then` is an event or an error, never the command, never a read
-model, and never empty. The other two are the view form: no `when`, given
-events, and `then` the to-do list of this automation. They show when a row
-enters the list and when the completion event removes it.
+A completion event is added to that worker read model's `from` list. Do not
+reverse an edge or invent a closer attribute. This example is an internal
+worker. A translation across systems or team-owned contexts follows the next
+pattern, even when the CLI calls an internal cross-context translation a worker.
+The first scenario is the action form. Its `when` targets the processor,
+and its `then` targets the resulting event. An action form can also assert
+a command dispatch or no dispatch. The other two scenarios are the view form:
+no `when`, given events, and `then` the todo list of this automation. They show
+when a row enters the list and when the completion event removes it.
 
-## Translation (an automation over external events)
+## Translation (external-system example)
 
 ```hcl
 system "payment_provider" {
@@ -209,16 +212,19 @@ automation "confirm_paid_order" {
 }
 ```
 
-A translation is an `automation` that consumes at least one event from a
-bounded context marked `external = true` and emits the receiving domain's
-language. There is no `translation` keyword; tools derive the translation from
-the external edge. The internal
-event is a new fact, not a linked copy of the external one. Do not rename the
-external fact and leak it as the internal event. Do not add the internal event
-to the translation read model's `from` list as a "closer". The list is a relay
-of foreign facts awaiting translation, not a completed-state tracker: membership
-is not "not yet recorded on an order". A later worker is a separate `automation`
-only when it makes a new decision.
+This example consumes an event from a bounded context with `external = true`
+and emits the receiving domain's language. There is no `translation` keyword.
+Tools recognize this external edge as translation. Business translation also
+crosses team-owned contexts inside the system. Preserve that meaning even when
+the CLI classifies the automation as a worker. Do not invent external ownership
+to change the tool classification.
+
+The receiving event is a new fact, not a linked copy of the foreign one.
+Do not rename the foreign fact and leak it as the receiving event. Do not add
+the receiving event to the translation read model's `from` list as a closer.
+The list relays foreign facts. It is not a completed-state tracker whose
+membership means "not yet recorded on an order". A later worker is a separate
+`automation` only when it makes a new decision.
 
 ## Failure scenarios
 
@@ -249,9 +255,11 @@ form scenario. Do not invent that rule.
 ## Information-completeness example
 
 If `order_placed` contains `order_id`, `customer_id`, and `total`, the deciding
-command must provide those values, or `generated = true` plus a `description`
-must state the derivation. If `order_summary` exposes the same fields, each
-must be obtainable from one of its `from` events. Encode that lineage with
+command must supply those values. Use `generated = true` only for values
+that the system fills. Encode a supplied derivation in a `field_source`
+block with its `inputs`, `target`, and `description`. If `order_summary`
+exposes the same fields, each must be obtainable from one of its `from` events.
+Encode that lineage with
 `field_source` blocks, not with `mapping`, `session:`, `latest:`, `derived:`,
 or `aggregate:`. A field
 required only by infrastructure does not belong in a domain contract unless it

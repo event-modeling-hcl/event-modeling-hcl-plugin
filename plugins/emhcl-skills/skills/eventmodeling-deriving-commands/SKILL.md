@@ -3,7 +3,7 @@ name: eventmodeling-deriving-commands
 description: Derives one command for each screen action and each trigger inside the system, such as a timer, with one issuer, one role, typed fields, business rules, preconditions from the lifecycle, a success event, and named failures. Use it when someone asks what actions a user or the system can take, asks to turn the buttons of a screen into commands, or asks which inputs and preconditions an action needs. Does not write screens, events, read models, automations, or scenarios.
 metadata:
   version: "1.0.0"
-  contract: "K0 K1 K2 K6 K7 K8 K9 H0 H3 H5 H6 H10"
+  contract: "K0 K1 K2 K3 K6 K7 K8 K9 H0 H3 H5 H6 H10"
 ---
 
 
@@ -31,8 +31,8 @@ If you do not know which actions a person starts and which the system starts, as
 
 1. Resolve each open request on your part first.
 2. List each action on each screen. Each action becomes one command.
-3. List each trigger inside the system, such as a timer that fires at the end of a rental period. Each trigger becomes one command, issued by an automation.
-4. If the trigger is an event from another system, derive no command for it. Write a request (K8) on that event, concerning automations.
+3. List the triggers and processor actions inside the system, including translation steps and timers. Each processor action becomes one command in that automation's slice (K3).
+4. Do not invent a command to cause a foreign event. Derive the translation command from its processor. If that processor is missing, request the automations part.
 5. Name each command in the imperative with business words (K1).
 6. Give each command one issuer (a screen or an automation) and one specific role or system actor.
 7. List the typed fields of each command. Add only fields that the command needs. Give each field an origin under K2.
@@ -45,13 +45,14 @@ If you do not know which actions a person starts and which the system starts, as
 14. If a field depends on another field, write the condition. Example: a card number only when the payment method is card.
 15. If a screen field that the command needs does not exist, write a request on the screen, concerning screens.
 16. If a lifecycle move or refused move for the command is missing, write a request on the lifecycle, concerning lifecycles.
+17. Apply the multi-stream boundary test of K1. If the command needs a different boundary, request the streams part instead of inventing a cross-stream atomic action.
 
 ## Rules
 
-1. One command for each screen action. One command for each trigger inside the system.
+1. One command for each screen action and each processor action, including a translation action. A timer needs the business fact that opens its work.
 2. A conditional field names the field that it depends on and the value that turns it on.
-3. A command without a screen action gets its issuer from an automation. Never mark it as triggered from outside when an issuer can be modeled.
-4. In an `.em.hcl` model, a command issued by a person goes into the `state_change` workflow of its screen. A command with no screen goes into the workflow of its processor. If no workflow holds it yet, create the `state_change` workflow (H3).
+3. Preserve a deliberately omitted issuer only under K1 and its notation binding. Never use that exception for an unexplained trigger.
+4. In an `.em.hcl` model, a person's command belongs to its screen's `state_change`. A processor's command belongs to its `automation`. If the automation is missing, request it instead of creating an unrelated state change.
 
 ## Result
 
@@ -70,7 +71,7 @@ Read `references/examples.md` for worked commands with context fields and condit
 
 ## Done when
 
-1. Each screen action and each trigger inside the system has exactly one command, and each event from another system has a request concerning automations instead.
+1. Each screen action and processor action has exactly one command. Foreign events retain their outside cause and have translation commands only for the receiving domain's facts.
 2. Each command has one issuer and one specific role or system actor.
 3. Each command field has a type and an origin under K2.
 4. Each value that a rule or precondition reads is a command field or comes from earlier events of the stream.

@@ -70,6 +70,7 @@ Slices and flow (inputs: slices)
 - 5.2 Each move between slices is an allowed transition, and no flow starts with an untriggered state change. K3 rules 14 to 18. HCL: validator for the edges of each workflow. The order of workflows on the board stays a judgment audit.
 - 5.3 The timeline reads forward. Each upstream element comes before its consumers. K3 rules 19, 20.
 - 5.4 Alternative paths exist where the business needs them: cancel, failure, and compensation. K7 rule 2.
+- 5.5 Apply the pending-work and translation rules of K3. Include internal cross-team boundaries, worker completion, translation projections, and any explicit minimal-encoding omission. A CLI classification alone does not prove business meaning.
 
 Shapes (inputs: screens, commands, read models, scenarios)
 
@@ -78,7 +79,7 @@ Shapes (inputs: screens, commands, read models, scenarios)
 ### Final questions
 
 1. Can a modeler unfamiliar with the domain understand this model within 15 minutes?
-2. Can the rule behind a read model change without a rewrite of the stored events?
+2. Can the rule behind a read model change without rewriting recorded business facts? This question does not require Event Sourcing.
 
 Answer each with yes or no and one reason. On a partial run, answer "not asked" when the parts that a question needs do not exist.
 

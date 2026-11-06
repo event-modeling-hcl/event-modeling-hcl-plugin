@@ -33,7 +33,7 @@ If a read model or one of its feeding events does not exist, write no scenario f
 5. For a list, write each expected row with its values. If the list is empty on purpose, state that the list is empty.
 6. If the format includes a storyline, write it with the beat grammar below.
 7. Read the beats again. Remove each view scenario that asserts a state that a beat already shows. Fix or remove each view scenario that contradicts a beat.
-8. If the feeding events live in another chapter, write the scenario with no given event. Say in the title that the source is in that chapter. Do not invent an event to fill the gap.
+8. If feeding events come from another chapter, reference those same events in the given steps. Name the source chapter in the title when useful. Never replace real history with an empty given.
 9. Fill each essential value under K6.
 10. If the source is code, write a storyline only when the person asks for it.
 
@@ -71,6 +71,6 @@ It reports to the person: the format decision of each read model with its reason
 3. Each read model whose format includes a storyline has that storyline.
 4. Each list expectation names its rows or states that the list is empty.
 5. No view scenario repeats or contradicts a storyline beat of the same read model.
-6. Each scenario of a read model fed from another chapter says so in its title, and no invented event stands in for its source.
+6. Each cross-chapter scenario references its real source events. No invented event or empty-history shortcut stands in for its source.
 7. Each asserted value has a concrete example.
 8. No open request on read model scenarios remains.

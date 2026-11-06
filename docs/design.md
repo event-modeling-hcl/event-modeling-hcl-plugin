@@ -159,7 +159,7 @@ The skill `event-modeling-hcl` lives in the plugin `emhcl-skills` of this reposi
 
 The repair loop belongs to the skill `event-modeling-hcl`. It has one circuit breaker for each diagnostic code on one element, with a limit of two failed repairs. The plugin uses that limit and defines no retry count of its own.
 
-An eval of the path `plugins/emhcl` loads only that plugin, so the language evals live in `emhcl-skills`. The method skills of `emhcl-skills` and their contract are described in `docs/event-modeling-uncoupled-skills.md`.
+An eval of the path `plugins/emhcl` loads only that plugin, so the language evals live in `emhcl-skills`. The method skills and their authorities are described in [Skill boundaries and authorities](#skill-boundaries-and-authorities).
 
 ### DP3: Git port
 
@@ -390,6 +390,140 @@ Before encoding a paper account, resolve the system boundary, actual executors, 
 Use Axiomatic Design for changes to skill responsibilities, shared contracts, and downstream software boundaries. Do not require its matrices during an ordinary business workshop. File separation alone does not prove that changing one responsibility leaves every other outcome unchanged.
 
 The focused behavior cases in `plugins/emhcl-skills/evals/` cover replacement discovery, stale displayed information, actual automation, and continuation of existing work. These cases exercise the boundaries. They do not prove whole-system independence or provide probabilities for the Information Axiom.
+
+## Skill boundaries and authorities
+
+This section is for maintainers who change skill responsibilities.
+It covers business modeling, HCL encoding, edit permissions, and task selection.
+It does not change the Git, diagram, or validator-pin boundaries described earlier.
+
+### Needs and required outcomes
+
+N1 is the need to model business behavior without competing rules.
+N2 is the need to preserve that behavior in HCL.
+N3 is the need to protect existing work and shared consumers.
+N4 is the need to select the right work without repeating completed discovery.
+These needs apply to business-only models, HCL files, and folder models.
+
+A functional requirement (FR) states a required outcome.
+A design parameter (DP) is the mechanism chosen to control that outcome.
+The acceptance criteria below are proposed architecture criteria, not measured success rates.
+All four FRs have the parent outcome FR0: complete the requested modeling task safely.
+
+| FR | Need | Required outcome and acceptance criterion | DP and responsibility |
+| --- | --- | --- | --- |
+| FR1 | N3 | Leave locked workflows and affected shared consumers unchanged without named approval. Apply this to formatting, identities, and connected edits. | DP1: K13 controls permissions and approval scope. |
+| FR2 | N1 | Preserve supplied rules, field sources, and observable scenarios. Keep material unknowns visible. | DP2: the method contract and part writers control business meaning. |
+| FR3 | N2 | Encode agreed meaning with legal HCL. Report an unsupported intent rather than changing its meaning. | DP3: the language skill controls syntax and tools. The binding assigns HCL constructs to model parts. |
+| FR4 | N4 | Select the responsible writer or review without restarting completed work. Keep business-only results free of HCL requirements. | DP4: descriptions select focused skills. The orchestrator selects incomplete parts, and the facilitator manages live sessions. |
+
+The fixed constraints are HCL v0.8.0 compatibility and the existing model medium.
+An ordinary business workshop does not need HCL, Event Sourcing, or a software architecture.
+An HCL task must retain the supplied file or folder shape unless a change is requested.
+All required shared references must work inside the installed plugin.
+
+### Why the umbrella skill was retired
+
+The former `event-modeling` skill controlled discovery and business review.
+The 32 specialists also controlled those outcomes through a separate method contract.
+The language skill delegated business questions to the umbrella, while specialists wrote HCL directly.
+This created two business authorities and two places for some encoding rules.
+
+The old business-and-encoding branch had the following influence matrix.
+Rows are required outcomes, and columns are mechanisms whose changes can affect them.
+`X` means a material influence, `0` means no material influence under the stated boundary, and `?` means unresolved influence.
+
+| Outcome | Umbrella business rules | Specialist business rules | Language rules |
+| --- | --- | --- | --- |
+| Business meaning | X | X | 0 |
+| Faithful HCL encoding | X | X | X |
+
+This rectangular matrix exposes redundant business controls.
+It does not establish a coupled or uncoupled square design.
+The zero assumes that language work preserves meaning and reports representation gaps.
+The umbrella folder also held the stronger edit policy, so deleting it without migration left FR1 without its full control.
+
+The retained design assigns each shared rule one canonical source.
+K13 of `contract/method.md` owns permissions.
+Other method sections own business rules.
+The language skill owns syntax and tools, and `contract/hcl-binding.md` owns the mapping from parts to HCL constructs.
+The generator publishes those sources inside the installed skills.
+
+### Independence and order
+
+The proposed matrix uses the same FRs and DPs as the requirements table.
+It describes changes to policies and responsibilities, not a call graph.
+The zeros depend on every writer respecting the shared permission and meaning boundaries.
+Agent behavior must still be exercised before treating those boundaries as reliable.
+
+| Outcome | DP1 permissions | DP2 meaning | DP3 encoding | DP4 selection |
+| --- | --- | --- | --- | --- |
+| FR1 permitted changes | X | 0 | 0 | 0 |
+| FR2 business meaning | X | X | 0 | 0 |
+| FR3 faithful encoding | X | X | X | 0 |
+| FR4 correct task selection | X | X | X | X |
+
+This is a conditional decoupled design, which means that its controls require an order.
+Establish permissions first, business responsibilities second, encoding rules third, and task-selection rules last.
+This is design order, not a requirement to run a workshop before every syntax repair.
+An encoding change must preserve business meaning, and a selection change must preserve all writer boundaries.
+
+The off-diagonal entries have concrete causes.
+Permissions determine which business and HCL changes can proceed.
+Business changes require new encoding and can reopen earlier completion checks.
+Language capabilities and diagnostics determine whether selection returns a syntax repair or an unresolved business question.
+Changing any of these authorities requires reviewing the affected selection rules.
+
+The zeros are bounded claims.
+A syntax repair with known meaning must not restart discovery.
+Changing the facilitator's pacing must not change a writer's business rules.
+A shared event rename is not independent work: its consumers and permissions must be examined together.
+These local boundaries do not prove whole-system independence.
+
+### Module contracts and composition
+
+Part writers take source evidence and existing model content as inputs.
+They own only their named model part and its records.
+They return that part, its uncertainty, and requests for changes in other parts.
+They must stop an unauthorized connected edit without leaving partial contracts behind.
+
+Review skills take existing content as input and return findings.
+A review request grants no permission to fix the model.
+Source-intake skills attach evidence and requests rather than writing business elements.
+The model holds durable evidence, decisions, questions, and requests instead of a second working artifact.
+
+The language authority takes agreed meaning and an authorized edit scope.
+It supplies encoding rules, version requirements, tool gates, and diagnostic handling.
+It must report an unavailable tool or unsupported intent without inventing a successful validation result.
+The HCL binding selects constructs for each part but does not redefine the language or tool lifecycle.
+
+The orchestrator takes the model, sources, and requested scope.
+It selects the first incomplete part and loads its writer.
+The facilitator takes participant and session information and manages a live group.
+Neither coordinator writes model elements.
+
+S, summation, combines the writers' completed parts into the requested model.
+C, control, orders dependent parts and tool gates.
+F, feedback, returns review requests to the responsible writer.
+The feedback loop stops under K12 and the orchestrator's repeated-failure rule.
+It does not justify silent edits to other parts or unbounded repair attempts.
+
+### Alternatives and evidence limits
+
+Keeping both business authorities retains conflicting instructions and duplicate maintenance.
+Keeping only the umbrella discards the specialists' focused ownership and coordination.
+Removing the umbrella after migration preserves those responsibilities without adding another dispatcher.
+This is the selected design, subject to behavior evidence rather than file count.
+
+The Information Axiom compares the probability of meeting all required outcomes.
+No supported joint success probability exists for these alternatives.
+Fewer skills or fewer words do not establish lower information content.
+Compare the alternatives on the same business, encoding, permission, and routing cases before making a probability claim.
+
+The migrated evaluation cases preserve business-only discovery, uncertain translation, automation dispatch, and read-only review.
+The HCL cases preserve encoding, narrow repairs, and locked shared consumers.
+Additional change scenarios must exercise a shared rename, a stale display, a representation gap, and a syntax-only repair.
+Loader checks and generated-copy checks prove packaging properties, not correct agent decisions.
 
 ## Sources
 

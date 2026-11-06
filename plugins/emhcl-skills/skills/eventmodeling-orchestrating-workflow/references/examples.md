@@ -26,7 +26,9 @@ The reviews gate is the first gate that fails. The run loads each skill whose de
 
 ## Pass 10
 
-The read models gate fails again, because an open request is on its part. The run loads the writer of read models. After its change, the gates up to reviews pass. The next review finds nothing new. The review loop stops.
+The read models gate fails again, because an open request is on its part. The run loads the writer of read models. After its change, the gates up to reviews pass. The next review finds nothing new, so only the reviews gate closes.
+
+The run then loads the writers for missing slice status, ownership, and chapter summaries in gate order. It stops successfully only after every required gate passes.
 
 ## Final report
 
@@ -51,7 +53,7 @@ The read models gate fails again, because an open request is on its part. The ru
 | chapter summaries | pass |
 
 - Stop rule: every gate passes.
-- Open questions: "Does a member pay a fee for a late return?" on the command Return Book.
+- Open questions: none. The person answered the late-return fee question before the affected rules and scenarios passed.
 - Accepted debt: none.
 - Facts that the model cannot hold: none.
 
@@ -126,3 +128,11 @@ hotspot "due_date_source" {
   on       = readmodel.open_loans.open_loans
 }
 ```
+
+## A prerequisite request
+
+The command gate finds that a partner fact has no translation processor. The commands writer does not invent an issuer. It records a request for automations on the foreign event.
+
+The coordinator dispatches that request to the automations writer before retrying the command gate. That writer supplies the processor and pending-work projection. It requests the local fact from the events writer and the command from the commands writer. Each writer edits only its own part.
+
+The coordinator returns to each blocked request after its prerequisites exist. It reports missing future-part diagnostics without repairing them through another writer's part. If the same request still fails after two attempts, or requests form an unresolved cycle, it stops under K12.

@@ -6,8 +6,10 @@ A partner app reports that a ride ended. The business then charges the rider.
 
 - Trigger: "Ride Ended" from the partner app (event from another system).
 - Todo list: Partner Rides To Record. The external event opens an item. Nothing closes it.
-- Command: Record Ride End. It decides nothing.
+- Required command: Record Ride End. Its writer records the foreign fact without a new business decision. Correlation and duplicate validation still apply.
 - Internal event: Ride Ended. The external name already is the business term, so it stays. "Ride End Received" is wrong.
+
+The automation writer creates the processor and todo list. It requests Record Ride End from the commands writer and the internal Ride Ended fact from the events writer. Their completed elements stay in this automation slice.
 
 ## Worker step
 
@@ -31,6 +33,8 @@ A partner app reports that a ride ended. The business then charges the rider.
 | No status field | yes | yes |
 
 ## In an .em.hcl model
+
+This completed example combines the parts supplied by their writers. The automation writer owns the processor and pending-work read model, not the command or result event.
 
 ```hcl
 automation "charge_ride" {

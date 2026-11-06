@@ -4,18 +4,17 @@ Two open-source Claude plugins for teams that keep an event model in
 [Event Modeling HCL](https://github.com/event-modeling-hcl/spec) (`.em.hcl`)
 files:
 
-- `emhcl-skills` holds the agent skills for Event Modeling: 32 method skills
-  from discovery to delivery planning, and the skills `event-modeling` and
-  `event-modeling-hcl`, which write and validate `.em.hcl` models with emhcl.
-  It is the home of the emhcl agent skills.
+- `emhcl-skills` holds 32 method skills and the `event-modeling-hcl`
+  language skill. The method skills discover, review, and plan business models.
+  The language skill owns HCL syntax and emhcl tool operations.
 - `emhcl` lets each person on a team view, change, and review the model
   through Claude. A change reaches the default branch only through a merge
   request in GitLab or GitHub, which a person reviews and merges. It installs
   `emhcl-skills` as a dependency.
 
 The plugins target specification v0.8.0 and emhcl v0.17.0 or newer.
-The existing `emhcl` plugin and the two transferred upstream skills use
-Apache-2.0. Release of the new method content awaits source-license review.
+The existing `emhcl` plugin and the upstream language content use
+Apache-2.0. Release of the restated method content awaits source-license review.
 See [contract/CREDITS.md](contract/CREDITS.md). A passing text-overlap scan
 does not establish license clearance.
 
@@ -48,15 +47,17 @@ without the Git procedures, install `emhcl-skills@event-modeling-hcl`.
 
 ## The method skills
 
-Each method skill gives one outcome and writes one part of the model. No
-method skill names another skill. The skills exchange work only through the
-content of the model: records such as open questions, assumptions, requests,
-decisions, and evidence. The rules that several skills share are in
-[contract/method.md](contract/method.md), and their encoding in `.em.hcl` is in
-[contract/hcl-binding.md](contract/hcl-binding.md).
-`scripts/build-contract.sh` copies the sections that each skill lists into its
-`references/contract.md`. The design is in
-[docs/event-modeling-uncoupled-skills.md](docs/event-modeling-uncoupled-skills.md).
+Each method writer owns one part of the model. Writers exchange requests,
+questions, decisions, and evidence through the model. They do not call other
+method writers by name. The orchestrator selects writers by responsibility.
+The language skill is their shared authority for HCL syntax and tool operations.
+
+The shared rules are in [contract/method.md](contract/method.md).
+Section K13 holds the complete edit policy, including locked workflows and
+shared consumers. [contract/hcl-binding.md](contract/hcl-binding.md) maps model
+parts to HCL. `scripts/build-contract.sh` publishes these rules inside the
+installed skills. Edit the canonical files, not the generated references.
+See [the skill boundaries](docs/design.md#skill-boundaries-and-authorities).
 
 To model a domain from start to end, ask for a complete event model. The skill
 `eventmodeling-orchestrating-workflow` then runs the gates of the contract in
@@ -70,6 +71,16 @@ actors. The reset does not add a gate or require a separate paper model.
 
 Use Axiomatic Design when reviewing skill responsibilities or choosing software
 boundaries after business discovery. It is not a required workshop step.
+
+For a live group session, use `eventmodeling-facilitating-workshop`. It manages
+participants and time, while the part writers record the model. For syntax-only
+repairs, formatting, conversion, or language explanations, use
+`event-modeling-hcl` without repeating business discovery. Business-only work
+needs no HCL file or CLI run.
+
+The broad `event-modeling` skill is retired. Use the orchestrator for a complete
+model, the facilitator for a live session, or the specialist for one model part.
+The shared contract preserves the retired skill's business and permission rules.
 
 You also need one Git connector in Claude:
 
@@ -160,14 +171,13 @@ emhcl-plugin/
 ├── plugins/emhcl-skills/
 │   ├── .claude-plugin/plugin.json
 │   ├── skills/
-│   │   ├── event-modeling/                # business meaning, from emhcl v0.17.0
-│   │   ├── event-modeling-hcl/            # DP2: language and emhcl operations, from emhcl v0.17.0
-│   │   └── eventmodeling-*/               # 32 method skills, each with a generated references/contract.md
-│   └── evals/                             # three cases for each method skill
+│   │   ├── event-modeling-hcl/            # DP2: language, tools, generated permissions and binding
+│   │   └── eventmodeling-*/               # 32 method skills with generated contract references
+│   └── evals/                             # method, business-only, and HCL behavior cases
 ├── contract/                              # method contract and HCL binding (DP0)
 ├── ci-templates/emhcl.gitlab-ci.yml       # DP5 for GitLab
 ├── .github/workflows/emhcl-model.yml      # DP5 for GitHub Actions
-├── scripts/build-contract.sh              # copies contract sections into the method skills
+├── scripts/build-contract.sh              # publishes installable shared authorities
 ├── scripts/sync-upstream.sh               # copies the example at a tag, writes compatibility.md
 ├── examples/pet-clinic/                   # upstream folder model, plus .emhcl.yml
 └── tests/                                 # script and structure tests

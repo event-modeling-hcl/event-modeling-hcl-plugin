@@ -21,7 +21,7 @@ The provider sends "charge.succeeded" with its own charge identifier. Our comman
 
 Pattern: correlation lookup.
 
-Failure cases for the translation command: no rental for the charge reference, rental already paid, the same charge delivered twice, amount below zero.
+Failure cases for the translation command: no rental for the charge reference, rental already paid, the same charge delivered twice, amount below zero. The mapping writer requests the supported cases from the command-scenario writer. Unknown outcomes remain questions instead of invented errors.
 
 ## In an .em.hcl model
 
@@ -34,4 +34,4 @@ automation "record_rental_payment" {
 }
 ```
 
-The command field `charge_reference` carries `deduplication_key = true`, and `rental_number` carries `correlation_key = true`.
+The command writer supplies `deduplication_key = true` on `charge_reference` and `correlation_key = true` on `rental_number`. The mapping writer requests missing annotations without editing that command.

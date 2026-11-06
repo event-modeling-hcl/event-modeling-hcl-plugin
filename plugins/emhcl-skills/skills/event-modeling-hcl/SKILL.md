@@ -4,10 +4,10 @@ description: >-
   Author, extend, repair, review, validate, format, split, migrate, import,
   export, or explain Event Modeling HCL v0.8.0 files and folder models.
   Use for `.em.hcl` syntax, references, scenarios, diagnostics, and emhcl
-  commands. For business discovery or business-quality review, use the sibling
-  event-modeling skill. When a request turns domain prose into HCL, use
-  event-modeling first, then this skill. Do not use this skill for a
-  workshop-only discussion with no HCL deliverable.
+  commands. For a complete business model, use eventmodeling-orchestrating-workflow
+  first. For a live workshop, use eventmodeling-facilitating-workshop.
+  For focused business work, load the specialist that owns the requested part.
+  Syntax-only work with supplied meaning stays in this skill.
 compatibility: >-
   Targets Event Modeling HCL Specification v0.8.0. For machine verification,
   use emhcl v0.17.0 or newer. v0.16.0 implements v0.7.0 and rejects the
@@ -34,15 +34,62 @@ Read these references for the requested operation:
 
 - Read [the language reference](references/language-v0.8.md) before writing,
   repairing, reviewing, splitting, migrating, importing, or exporting HCL.
-- Read [the shared edit policy](../event-modeling/references/edit-policy.md)
+- Read [the shared edit policy](references/edit-policy.md)
   before any mutation, including formatting, conversion, and repair. It is the
   single source for workflow locks and shared-contract permissions.
 - Read [canonical HCL patterns](references/patterns.md) when the encoding of a
   pattern or scenario is uncertain. Adapt vocabulary to the domain.
+- Read [the HCL responsibility binding](references/hcl-binding.md) when
+  encoding a business part. It maps each part to its HCL representation.
 
-Use [event-modeling](../event-modeling/SKILL.md) when business meaning is
-incomplete or the user requests business-quality review. Do not rerun discovery
-for a syntax-only repair whose meaning is already clear.
+## Route business work to its owner
+
+For a complete business modeling request, load
+[the workflow orchestrator](../eventmodeling-orchestrating-workflow/SKILL.md).
+It sequences the parts and their completion gates. For a live workshop, load
+[the workshop facilitator](../eventmodeling-facilitating-workshop/SKILL.md).
+It guides the group while the part writers record the model and its questions.
+
+For a focused request, load only the specialist that owns that responsibility:
+
+| Requested business work | Owning specialist |
+| --- | --- |
+| Roles | [Catalog roles](../eventmodeling-cataloging-roles/SKILL.md) |
+| Events | [Brainstorm events](../eventmodeling-brainstorming-events/SKILL.md) |
+| Streams and identities | [Bound streams](../eventmodeling-bounding-streams/SKILL.md) |
+| Lifecycle states and transitions | [Map lifecycles](../eventmodeling-mapping-lifecycles/SKILL.md) |
+| Screens and client actions | [Storyboard screens](../eventmodeling-storyboarding-screens/SKILL.md) |
+| Commands and success facts | [Derive commands](../eventmodeling-deriving-commands/SKILL.md) |
+| Internal automations | [Design automation chains](../eventmodeling-designing-automation-chains/SKILL.md) |
+| External or cross-team translation | [Translate external events](../eventmodeling-translating-external-events/SKILL.md) |
+| Read models | [Derive read models](../eventmodeling-deriving-read-models/SKILL.md) |
+| Chapters | [Group chapters](../eventmodeling-grouping-chapters/SKILL.md) |
+| Business-time story order | [Plot the timeline](../eventmodeling-plotting-timeline/SKILL.md) |
+| Command scenarios | [Write command scenarios](../eventmodeling-writing-command-scenarios/SKILL.md) |
+| Read-model scenarios | [Write read-model scenarios](../eventmodeling-writing-read-model-scenarios/SKILL.md) |
+| Model rules and business-quality review | [Audit model rules](../eventmodeling-auditing-model-rules/SKILL.md) |
+| Field origins | [Audit field lineage](../eventmodeling-auditing-field-lineage/SKILL.md) |
+| Scenario coverage | [Measure scenario coverage](../eventmodeling-measuring-scenario-coverage/SKILL.md) |
+| Adverse business cases | [Stress-test the model](../eventmodeling-stress-testing-model/SKILL.md) |
+| Open business questions | [Ask business questions](../eventmodeling-asking-business-questions/SKILL.md) |
+| Supplied answers | [Apply answers](../eventmodeling-applying-answers/SKILL.md) |
+| Review feedback | [Apply feedback](../eventmodeling-applying-feedback/SKILL.md) |
+| Change impact | [Assess change impact](../eventmodeling-assessing-change-impact/SKILL.md) |
+| Slice planning and status | [Plan slices](../eventmodeling-planning-slices/SKILL.md) |
+| Team ownership | [Assign ownership](../eventmodeling-assigning-ownership/SKILL.md) |
+| Delivery estimates | [Estimate delivery](../eventmodeling-estimating-delivery/SKILL.md) |
+| Chapter summaries | [Write chapter summaries](../eventmodeling-writing-chapter-summary/SKILL.md) |
+| Document evidence | [Extract document facts](../eventmodeling-extracting-document-facts/SKILL.md) |
+| Code evidence | [Read code evidence](../eventmodeling-reading-code-evidence/SKILL.md) |
+| Model and code differences | [Detect code drift](../eventmodeling-detecting-code-drift/SKILL.md) |
+| Flow explanations | [Explain the flow](../eventmodeling-explaining-flow/SKILL.md) |
+| Data journeys | [Trace a data journey](../eventmodeling-tracing-data-journey/SKILL.md) |
+
+Do not route syntax-only repair, formatting, migration, import, export, or
+diagnostic explanation through business discovery when the meaning is clear.
+This skill can encode supplied business facts without restarting discovery.
+If the facts leave a business decision open, return that decision to its
+owner. Do not invent a broad business-writing step inside this skill.
 
 The normative v0.8.0 specification wins over examples, existing files, and
 general HCL knowledge. Legal syntax does not prove business quality. Do not
@@ -51,7 +98,7 @@ and return the unresolved decision to business modeling.
 
 ## Establish the handoff and edit scope
 
-For domain prose, establish the business model with the sibling skill first.
+For domain prose, use the business owner above before encoding its decisions.
 Carry its scope, vocabulary, owned facts, flows, fields and their sources,
 scenario intent, evidence, unknowns, and permitted changes into HCL. The
 handoff can be the existing conversation or model. Do not require a new file
@@ -67,9 +114,10 @@ changing shared contracts. Apply the shared edit policy before planning the
 change. A formatter or migration command is a mutation too. Do not run a
 whole-model rewrite when its changes exceed the permitted scope.
 
-On review-only requests, report findings without editing files. Business
-review uses the sibling skill. Syntax review uses this skill and the CLI.
-For review-and-fix requests, make only authorized changes.
+On review-only requests, report findings without editing files. Route business
+review to the matching reviewer above, without authorizing fixes. Syntax
+review uses this skill and the CLI. For review-and-fix requests, make only
+authorized changes.
 
 ## Preserve model structure
 
@@ -105,9 +153,12 @@ Represent external ownership with `external = true` on the supplied systems
 and contexts. Use `title` only when the literal text differs from the ID.
 
 Encode each selected capability as its matching workflow kind. Translation
-uses `automation` over external facts, not a `translation` keyword. Preserve
-the business model's pending-work read model. If the user requests only a
-minimal legal automation, record any omission of that methodological element.
+uses `automation`, not a `translation` keyword. Preserve translation across
+systems or team-owned contexts even when the CLI calls it a worker. Mark
+`external = true` only for supplied external ownership. Preserve
+the business model's pending-work read model. Only an explicit request for a
+minimal legal automation permits its omission. Record the omission as a
+method gap. Legal HCL with that gap is not a complete methodological model.
 A client request or response uses a screen with `kind = "api"`. A reported
 external fact uses an external event, not a pseudo-screen. Put a supplied API
 route on the API screen as `api_endpoint`, not on the command as its reason.

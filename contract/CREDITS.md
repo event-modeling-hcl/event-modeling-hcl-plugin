@@ -4,7 +4,12 @@ The method contract (`contract/method.md`), its HCL binding, and the 32 method s
 
 The license of the 29 source skills is unknown. Before release, run `scripts/check-source-overlap.sh` and resolve the source-license question. The script scans the contract, method skills, examples, and plugin evals for matching runs of eight words. A passing result is a text comparison, not legal clearance. Until the license question is resolved, do not describe the method content as cleared for release under Apache-2.0.
 
-The skills `event-modeling` and `event-modeling-hcl` come from emhcl v0.17.0 (Apache-2.0) and are not part of this restatement.
+The language skill `event-modeling-hcl` comes from emhcl v0.17.0
+(Apache-2.0). The retired `event-modeling` skill came from the same release.
+Its edit policy now lives in K13 of `contract/method.md`. Its business guidance
+is integrated into the relevant method sections, and its behavior cases live
+in the plugin eval suite. These upstream contributions retain their Apache-2.0
+provenance. Their integration does not clear the other restated source content.
 
 ## Contract sections
 

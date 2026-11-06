@@ -1,3 +1,16 @@
+---
+description: Exercise hcl folder split.
+tags: [language, acceptance, migration]
+max_turns: 40
+timeout_seconds: 900
+allowed_tools: [Read, Write, Edit, Bash, Glob, Grep, Skill]
+---
+
+Split the supplied `clinic.em.hcl` into a folder model `clinic/` so that each team can own its own workflows. It contains a clinic bounded context, receptionist actor, register_pet, pet_directory, and notify_owner workflows, their chapter, and an open hotspot on the notify_owner processor. Keep the board order, chapter membership, ownership, scenarios, and the unanswered notice-timing question unchanged. Format and validate the folder if a compatible CLI is available.
+
+Sandbox setup: first write the exact supplied contents below to `clinic.em.hcl` in the current directory. This setup is not an approved change to the model. Then perform the request above.
+
+```hcl
 board {
   workflows = [workflow.register_pet, workflow.pet_directory, workflow.notify_owner]
 }
@@ -119,3 +132,4 @@ hotspot "owner_notice_timing" {
   status   = "open"
   on       = processor.notify_owner.owner_notifier
 }
+```

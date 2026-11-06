@@ -25,7 +25,7 @@ Slice status comes after the reviews. If a review finding is still open, give th
 1. Resolve each open request on your part first. A request that asks for a status change gets that status, or a decision (K8) that states why the status stays.
 2. List each command, read model, and automation. Count an element that is used in two places once.
 3. Find the slice of each element. In an `.em.hcl` model, the slice is the workflow that holds the element.
-4. If an element has no slice, or one slice holds more than one element, do not fix it. Write a request (K8) on the element, concerning the part of that element: commands, read models, or automations.
+4. If an element has no slice or a slice combines independent responsibilities, request its part under K8. An automation's supporting command and todo list remain in that automation slice (K3).
 5. Give each slice its kind and its name under K3.
 6. List the events that each slice uses and produces:
    1. State change: it uses the events that its command decides from. These are the earlier events of its stream that lead to the states before its move in the lifecycle, and the given events of its scenarios. It produces the success events of its command.
@@ -34,8 +34,8 @@ Slice status comes after the reviews. If a review finding is still open, give th
 7. Find the dependencies. Slice B is downstream of slice A when B uses an event that A produces. Name that event for each dependency.
 8. Name the pattern of each dependency. Use the dependency patterns below.
 9. Write the contract of each slice. Use the contract section below.
-10. Decide the status of each slice. Use the status table below.
-11. Write the status of each slice. In an `.em.hcl` model, write `status` on the workflow (H11). Never change a status that H0 protects unless the person asks for it.
+10. Report the applicable status from the table below. Apply K13 before writing it. Source evidence supports a status judgment, not permission to advance it.
+11. Write only an authorized status change. In an `.em.hcl` model, write `status` on the workflow (H11).
 12. Report the slices with the slice template below.
 
 ## Dependency patterns
@@ -65,7 +65,7 @@ A downstream team builds against the postcondition of the upstream slice. In its
 | planned | The element is complete, the gates before slice status pass, and no open record is on the slice. |
 | assigned | The slice is planned and the ownership part names its owner team. |
 | blocked | An open question or an open request is on the slice or on an event that it uses. |
-| in progress, review, done | Only when the person states it, or an evidence source of the kind code shows it. |
+| in progress, review, done | The person states it, or code evidence supports it. K13 still controls permission to write or advance it. |
 | informational | The person agrees that the team will not build the slice, for example a step of another system. |
 
 In an `.em.hcl` model, write `in_progress` for "in progress".
@@ -105,7 +105,7 @@ It reports to the person the slice list in the template, the dependencies with t
 1. The report lists each command, read model, and automation in exactly one slice, or it names the request that the skill wrote about that element.
 2. Each slice in the report states its kind, its events used, its events produced, its upstream slices, its downstream slices, its precondition, and its postcondition.
 3. Each dependency in the report names the event that links the two slices.
-4. Each slice has a status in the model, and the report names the open record of each blocked slice.
+4. Each slice has a status or the report names the permission that prevents writing it. Each blocked slice names its open record.
 5. No open request on slice status remains.
 6. The skill changed no part other than slice status, apart from the requests and decisions that it wrote.
 7. In an `.em.hcl` model, `emhcl validate --profile workshop` shows no core error that the change caused.

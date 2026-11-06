@@ -1,3 +1,16 @@
+---
+description: Exercise hcl legacy migration.
+tags: [language, acceptance, migration]
+max_turns: 40
+timeout_seconds: 900
+allowed_tools: [Read, Write, Edit, Bash, Glob, Grep, Skill]
+---
+
+The supplied `legacy.em.hcl` is a v0.4.0 model: it has no board, typeless order_id and partner_order_id fields backed by uniquely named field types, and translation "import_partner_order". Bring it to the current language without changing its meaning and validate it if the CLI is available. Preserve meaningful existing titles such as Customer purchases and Checkout purchase; do not leave redundant titles that merely spell out an ID.
+
+Sandbox setup: first write the exact supplied contents below to `legacy.em.hcl` in the current directory. This setup is not an approved change to the model. Then perform the request above.
+
+```hcl
 bounded_context "orders" {
   title = "Customer purchases"
 
@@ -90,3 +103,4 @@ translation "import_partner_order" {
     then { event = event.orders.order_placed }
   }
 }
+```

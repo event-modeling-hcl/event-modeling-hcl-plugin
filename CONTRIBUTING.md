@@ -8,7 +8,7 @@ agent skills. Put each change in the part that owns it:
 | --- | --- |
 | The Event Modeling HCL language, diagnostics, or the diagram page | Upstream: [eventmodeling-hcl](https://github.com/event-modeling-hcl/eventmodeling-hcl) or [spec](https://github.com/event-modeling-hcl/spec) |
 | How agents write, repair, and validate `.em.hcl` | `plugins/emhcl-skills/skills/event-modeling-hcl/` |
-| A rule that more than one method skill uses | `contract/method.md`, or `contract/hcl-binding.md` for its encoding. Then run `scripts/build-contract.sh`. |
+| A rule that more than one method skill uses | `contract/method.md`, including K13 edit permissions, or `contract/hcl-binding.md` for its encoding. Then run `scripts/build-contract.sh`. |
 | One step of the method | `plugins/emhcl-skills/skills/eventmodeling-<step>/` and its three evals in `plugins/emhcl-skills/evals/` |
 | How Claude installs emhcl | `plugins/emhcl/skills/em-collaborate/scripts/install-emhcl.sh` |
 | A Git connector tool name or parameter | `plugins/emhcl/skills/em-collaborate/references/git-operations.md` only |
@@ -18,12 +18,14 @@ agent skills. Put each change in the part that owns it:
 
 Rules that keep the design uncoupled:
 
-- Do not edit `compatibility.md` or a `references/contract.md` by hand. Run
-  `scripts/sync-upstream.sh <tag>` or `scripts/build-contract.sh`.
-- A method skill never names another skill, and never restates a rule of the
-  contract. It writes only its own part of the model and sends other changes
-  as request records. The structure tests fail when a skill names another
-  skill.
+- Do not edit `compatibility.md`, a `references/contract.md`, or the generated
+  language references `edit-policy.md` and `hcl-binding.md` by hand.
+  Run `scripts/sync-upstream.sh <tag>` or `scripts/build-contract.sh`.
+- A method skill never names another method writer. It writes only its own
+  model part and sends other changes as request records. It uses the language
+  skill as the shared authority for HCL syntax and tools.
+- Put shared permissions in K13 of `contract/method.md`. The generator
+  includes K13 in every method contract and in the language skill's policy.
 - A change to the language skill `event-modeling-hcl` that follows a new
   emhcl release changes `metadata.spec_version` and `metadata.emhcl_min` in
   its front matter. Then run `scripts/sync-upstream.sh <tag>`.
@@ -53,8 +55,14 @@ cd plugins/emhcl
 claude plugin eval . --trust-plugin --tag safety --tag language
 cd ../emhcl-skills
 claude plugin eval . --trust-plugin --tag method
+claude plugin eval . --trust-plugin --tag business
+claude plugin eval . --trust-plugin --tag language --allow-tools Write Edit Bash
 claude plugin eval . --trust-plugin --tag write --allow-tools Write
 ```
+
+The business cases cover plain-language modeling without file or CLI work.
+The language cases include the migrated HCL cases and permission boundaries.
+Grant writing tools only for cases that create or change sandbox fixtures.
 
 The evals cannot load a Git connector, because a plugin eval loads only MCP
 servers that the plugin declares, and `emhcl` declares none. So the evals

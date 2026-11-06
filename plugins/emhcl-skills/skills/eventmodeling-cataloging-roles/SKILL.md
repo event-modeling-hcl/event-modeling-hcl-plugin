@@ -31,7 +31,7 @@ If the model is an `.em.hcl` file or folder, follow the H sections of `reference
 5. Name each entry in business words. Use "Librarian", not "User Type 2".
 6. If a source says only "user" or "admin", find the role it means. If no source tells it, follow K9.
 7. For each human role, write one line about what the role does in the domain.
-8. For each human role, list its key actions. A key action is a change that the role starts.
+8. List each human role's actions and views. A read-only role can have a view without a state-changing action.
 9. For each human role, list what it cannot do. Take the limits from the sources.
 10. For each system actor, write whether it is inside this system or outside it.
 11. For each system actor, write what makes it act and how it talks to this system in plain words, for example "sends a message when a payment clears".
@@ -45,7 +45,7 @@ Read `references/examples.md` when you need a full catalog to compare against.
 ## Rules
 
 1. No entry has a generic name such as "User", "Admin", or "Customer Type".
-2. Each human role has at least one key action and at least one limit. A limit that no source gives is an assumption (K8).
+2. Each human role has an evidenced action or view. Record its limits from sources. Keep an unknown limit visible under K8 rather than inventing work or rights.
 3. A system actor is an entry of the catalog. It is not a second story inside a chapter.
 4. A new actor that a later part needs goes into the catalog before that part uses it.
 
@@ -59,7 +59,7 @@ Report to the person: the catalog as a table, each assumption, and each open que
 
 1. The model lists each human role and each system actor that the sources name.
 2. No entry has a generic name such as "User" or "Admin".
-3. Each human role has a description, at least one key action, and at least one limit.
+3. Each human role has a description and an evidenced action or view. Its limits are recorded or remain visible questions.
 4. Each system actor has its place, its trigger, and its contact, in the model or, for an internal actor in an `.em.hcl` model, in a request concerning `processor`.
 5. Each entry has an evidence record with a certainty.
 6. Each open point about an entry is an open question or an assumption on that entry.

@@ -71,7 +71,8 @@ if sh "$root/scripts/build-contract.sh" --check >/dev/null; then
 	pass "contract copies equal contract/"
 else fail "contract copies equal contract/ (run scripts/build-contract.sh)"; fi
 
-# C6: no method skill names another skill. Each skill folder may name only itself.
+# A method skill never names another method skill. The language skill is a
+# shared authority, not another model-part writer.
 all_skills=$(cd "$skills_plugin/skills" && ls)
 method_count=0
 for dir in "$skills_plugin"/skills/eventmodeling-*/; do
@@ -79,6 +80,7 @@ for dir in "$skills_plugin"/skills/eventmodeling-*/; do
 	method_count=$((method_count + 1))
 	for other in $all_skills; do
 		[ "$other" = "$own" ] && continue
+		[ "$other" = event-modeling-hcl ] && continue
 		hits=$(grep -rlE "(^|[^a-z-])$other([^a-z-]|$)" "$dir" || true)
 		[ -z "$hits" ] || fail "$own names the skill $other in: $hits"
 	done
@@ -86,7 +88,7 @@ for dir in "$skills_plugin"/skills/eventmodeling-*/; do
 		[ -f "$skills_plugin/evals/${own#eventmodeling-}-$kind/prompt.md" ] || fail "$own has no eval ${own#eventmodeling-}-$kind"
 	done
 done
-[ "$method_count" -eq 32 ] && pass "32 method skills, none names another skill, each has three evals" || fail "expected 32 method skills, found $method_count"
+[ "$method_count" -eq 32 ] && pass "32 method skills, no peer names, each has three evals" || fail "expected 32 method skills, found $method_count"
 
 # The procedures never name a merge tool except to forbid it.
 if grep -rn 'accept_merge_request\|merge_pull_request' "$skill/references/procedures"; then

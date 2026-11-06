@@ -1,3 +1,16 @@
+---
+description: Exercise business clinic review.
+tags: [business, acceptance, migration]
+max_turns: 25
+timeout_seconds: 900
+allowed_tools: [Read, Glob, Grep, Skill]
+---
+
+Review the supplied `clinic-workshop.txt` as a business Event Model. Report findings and genuine unanswered questions only; do not edit the file, silently restructure slices, add scenarios to it, or turn it into HCL. Identify information gaps and screen/command problems, and distinguish a supplied open question from a rule you can already evaluate. This is review mode, not permission to reopen completed or in-review work.
+
+Supplied workshop artifact:
+
+```text
 Clinic registration workshop model
 
 Scope: reception registers pets and sees their registration details. Communications requests an owner notice after registration.
@@ -35,3 +48,4 @@ Notify Owner (status: review):
 - Open question on the processor: How soon after registration should the owner notice be requested?
 
 No rule or source for vaccination_status, notice timing, or the outcome of Correct Owner Email has been agreed.
+```

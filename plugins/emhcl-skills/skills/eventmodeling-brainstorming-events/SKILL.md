@@ -72,7 +72,7 @@ Report to the person: the event list with key facts, the events that you removed
 ## Done when
 
 1. Each event has a past-tense name in business words.
-2. Each event carries its identity field and only captured facts. No event holds a computed value.
+2. Each event carries its business identity and captured facts. Changing calculations stay in read models. A decision-time value follows K1 until the business decides it.
 3. No event is a create, update, or delete of a record.
 4. No two events mean the same thing.
 5. Each known error and limit is a failure event or a rule in the report.

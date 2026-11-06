@@ -11,7 +11,28 @@ has the form `emhcl--v<version>`, as `claude plugin tag` makes it.
   handoffs, corrections, and delays in the event and workshop skills.
 - Shared discovery rules retain source evidence, actual system actors, and
   command authority without restarting completed work or adding a paper model.
-- The general Event Modeling skill makes the paper-to-software handoff explicit.
+- The 32 method skills now own business modeling without the broad
+  `event-modeling` skill. Use the orchestrator for complete models, the
+  facilitator for live sessions, or the writer for one model part.
+- K13 of the method contract now holds the complete shared edit policy.
+  Generated references preserve workflow locks, shared-consumer permissions,
+  and approval scope in installed plugins.
+- The language skill remains the authority for HCL syntax and tools.
+  The shared binding maps model parts to HCL without a second tool policy.
+- The coordinator routes explicit prerequisite requests to their part writers
+  and stops repeated failures or request cycles. It no longer duplicates the
+  HCL gate table.
+- A clean review closes only the reviews gate. Complete modeling runs continue
+  through slice status, ownership, and chapter summaries before reporting success.
+- Business and HCL acceptance cases now live in the executable plugin eval
+  suite. The cases retain business-only work, read-only review, and locked
+  shared-consumer behavior.
+
+### Removed
+
+- The executable `event-modeling` umbrella skill and its obsolete nested eval
+  layout. Its business guidance and permission policy remain in the shared
+  contract. See [the skill boundaries](docs/design.md#skill-boundaries-and-authorities).
 
 ## [0.2.0]
 

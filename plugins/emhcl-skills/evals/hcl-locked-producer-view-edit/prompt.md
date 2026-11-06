@@ -1,3 +1,16 @@
+---
+description: Exercise hcl locked producer view edit.
+tags: [language, acceptance, migration, permissions]
+max_turns: 40
+timeout_seconds: 900
+allowed_tools: [Read, Write, Edit, Bash, Glob, Grep, Skill]
+---
+
+Update `locked-order.em.hcl`. It has state_change "place_order" with status = "done" and a created state_view "view_order". Add the supplied loyalty_id field to the view only; event.orders.order_placed already supplies it as field_type.orders.loyalty_id. Do not reopen completed work. The place-order screen currently issues both place_order and apply_coupon; leave that screen locked, but say what is wrong with it.
+
+Sandbox setup: first write the exact supplied contents below to `locked-order.em.hcl` in the current directory. This setup is not an approved change to the model. Then perform the request above.
+
+```hcl
 board {
   workflows = [workflow.place_order, workflow.view_order]
 }
@@ -77,3 +90,4 @@ state_view "view_order" {
     then { readmodel = readmodel.order_summary }
   }
 }
+```

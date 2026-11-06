@@ -7,7 +7,7 @@ The domain is a city bike rental.
 - Free Bikes at Station: storyline, because bikes arrive and leave all day.
 - Rider Balance: storyline, because each top up and each fee changes the amount.
 - Rental Receipt: view scenarios only, because one ended rental gives one receipt.
-- Rider Profile: view scenarios only, because its source is the Sign Up chapter.
+- Rider Profile: view scenarios only, because each registration fact supplies its profile.
 
 ## View scenario with values
 
@@ -29,9 +29,9 @@ Title: No free bikes after the last bike leaves Harbor
 
 Title: Rider Profile shows the name, fed from the Sign Up chapter
 
-- Given: nothing in this chapter
+- Given: Rider Registered from the Sign Up chapter (rider R-44, name Ana Ruiz, plan "Monthly")
 - When: nothing
-- Then: Rider Profile (rider Ana Ruiz, plan "Monthly")
+- Then: Rider Profile (rider R-44, name Ana Ruiz, plan "Monthly")
 
 ## Storyline for an accumulating balance
 

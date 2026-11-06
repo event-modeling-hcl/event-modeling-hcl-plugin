@@ -2,6 +2,8 @@
 
 The model has a member who borrows and returns a book, a librarian who sees the open loans, and an automation that reminds a member of an overdue loan.
 
+These are reported statuses. Writing or advancing them requires the permissions of K13. Evidence of completion alone does not authorize a status change.
+
 ## Elements
 
 - The command Borrow Book produces the event Book Borrowed.
@@ -47,7 +49,7 @@ Slice: Open Loans
 Slice: Overdue Reminder
 - Kind: automation.
 - Element: the automation Overdue Reminder. It reminds the member when the due date passes.
-- Events used: Book Borrowed opens an item. Book Returned closes it.
+- Events used: Book Borrowed opens an item. Book Returned or Member Reminded closes it.
 - Events produced: Member Reminded.
 - Upstream: Borrow Book, Return Book.
 - Downstream: none.
@@ -120,7 +122,7 @@ hotspot "late_return_fee" {
 
 The events used by Return Book come from the lifecycle of the loan. Its move `return` has `before = [state.open]`, and the move `borrow` with the event `book_borrowed` leads to `state.open`.
 
-A request for a status change looks like this. The skill resolves it before it reports done.
+A request records a proposed status change, not approval by itself. The writer applies K13 before changing Return Book and records the answer before resolving the request.
 
 ```hcl
 hotspot "rebuild_return_book" {

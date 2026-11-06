@@ -463,8 +463,9 @@ result, never as an error. Use `expect_no_dispatch` for a no-dispatch
 assertion. A scenario cannot assert
 that one selected row is absent. Show concrete remaining rows or an empty
 list. Include the completion event in a worker todo list's `from` events
-when it closes the work. A translation relays an external fact and does not
-use its internal result as a completion closer.
+when it closes the work. A translation relays another system's or context's
+fact. It does not use its receiving-domain result as a completion closer,
+even when the CLI classifies an internal cross-context translation as a worker.
 
 Check scenario targets against the actual flow. The CLI does not establish
 that the command or processor produces the asserted event. Do not combine an
@@ -478,18 +479,20 @@ supplied already-done rejection can have its own `state_change` scenario with
 an `error` step. HCL cannot mark a command rejection as a successful no-op.
 Report any remaining representation gap instead of changing the rule.
 
-Business scenario coverage and field-source review belong to
-[event-modeling](../../event-modeling/SKILL.md). For HCL output, encode at
-least one supplied view example for each read model, including todo lists.
-Do not invent examples or failure wording to fill a checklist.
+Business scenario coverage belongs to
+[the coverage reviewer](../../eventmodeling-measuring-scenario-coverage/SKILL.md).
+Field-source review belongs to
+[the lineage reviewer](../../eventmodeling-auditing-field-lineage/SKILL.md).
+For each read model, including todo lists, encode at least one supplied view
+example. Do not invent examples or failure wording to fill a checklist.
 
 ## Diagnostic signals and business judgment
 
 `EM401` signals a screen with more than one command. `EM402` signals a command
 with more than one event. `EM403` signals a read model with more than one
 input event. `EM405` signals uneven scenario coverage. These signals do not
-replace the business thresholds in the sibling skill. Do not automatically
-split a workflow merely to remove a fan-in or fan-out warning.
+replace [the model-rules review](../../eventmodeling-auditing-model-rules/SKILL.md).
+Do not automatically split a workflow merely to remove a fan-in or fan-out warning.
 
 `EM404` checks for a command reason: an incoming canonical flow or a justified
 `external_trigger`. `api_endpoint` on a command is not a reason. The business

@@ -3,7 +3,7 @@ name: eventmodeling-auditing-field-lineage
 description: Audits every field in the whole event model for a missing origin or a missing consumer, and lists each gap once with the search that was made for the data. Use it when someone asks where data in the model comes from, which fields appear from nowhere, which inputs are never used, or whether the data flow of the model is complete. Writes nothing in the model until the person confirms a fix, then writes requests only. Does not add or rename fields. Does not trace one piece of data for a person.
 metadata:
   version: "1.0.0"
-  contract: "K0 K2 K8 K9 K10 H0 H8 H10"
+  contract: "K0 K1 K2 K8 K9 K10 H0 H8 H10"
 ---
 
 # Auditing field lineage
@@ -38,8 +38,8 @@ If the model is an `.em.hcl` file or folder, read origins as H8 describes: same 
 ## Rules
 
 1. Do not flag a technical field as missing business data. An identifier that links steps is the exception, because K2 covers it.
-2. A value that a person enters has its origin at the screen (K2 rule 10). A value that an automation creates has its origin at that automation.
-3. A total or a count belongs to a read model (K2 rule 16). It is not a missing event field.
+2. Apply K2 to generated values as well as copied values. Distinguish input on a screen, context on a command, identifiers created with a fact, and read model calculations. An automation label is not an unexplained source.
+3. A changing total or count belongs to a read model (K2 rule 16). A value fixed at decision time follows K1. Do not invent either an event field or a projection rule to settle an unknown.
 4. One element used in two places is one element. Its fields are not duplicates.
 5. Report a gap once, at the first element where the data goes missing (K10 rules 13, 14).
 6. A field with a "starts here" origin where an upstream element supplies the value is a gap (K2 rules 5, 6).

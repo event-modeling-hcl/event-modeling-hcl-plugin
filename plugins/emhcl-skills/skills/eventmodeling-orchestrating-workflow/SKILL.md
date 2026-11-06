@@ -3,12 +3,12 @@ name: eventmodeling-orchestrating-workflow
 description: Runs a full event modeling run over the gates of the method contract. It finds the first gate that fails, names the model part that must change and the elements that fail, loads the skill that writes that part, and repeats until every gate passes or a stop rule applies. Use it when someone asks to build a complete event model from a domain description, documents, or a code base, to continue an unfinished model, or to find out what the model still needs. Writes no model part itself. Does not run a live session with a group of people.
 metadata:
   version: "1.0.0"
-  contract: "K0 K9 K12 H0 H3"
+  contract: "K0 K9 K12 H0 H3 H10"
 ---
 
 # Orchestrating a modeling run
 
-This skill runs a modeling run over the gates of K12. Each pass finds the first gate that fails, names the part that must change, and loads the skill whose description says that it writes that part. The skill holds no modeling rule and no list of skills. It writes nothing in the model.
+This skill applies the gates of K12. It finds the first failing gate, names the missing part, and loads the writer whose description owns that part. Explicit requests route prerequisite work to its writer. The coordinator writes no model part and holds no separate rule or skill list.
 
 ## Before you start
 
@@ -16,7 +16,7 @@ Read `references/contract.md`. It holds the rules that this skill follows.
 
 Read the model if it exists, the sources (a domain description, documents, or code), and the goal of the person.
 
-If the model is an `.em.hcl` file or folder, follow the H sections of `references/contract.md`. The gates close in the order of H3, and each gate needs the validation of H0.
+If the model is an `.em.hcl` file or folder, follow H0 and the gate order of H3. Use K12 for gate criteria and prerequisite requests. Reuse the language authority for legal syntax and diagnostics.
 
 If the domain, the goal, or the limits are unclear, ask under K9 first: what the person models, which sources exist, what the result is for, and which limits apply. Then state your understanding in one sentence and ask the person to agree. In autonomous mode, state it and go on.
 
@@ -24,50 +24,28 @@ If the domain, the goal, or the limits are unclear, ask under K9 first: what the
 
 1. If the sources include documents or code that the model does not hold as evidence sources yet, load the skill whose description says that it takes facts from that kind of source. Do this before the first gate.
 2. Read the gate state. Read the model. In an `.em.hcl` model, run `emhcl validate --profile workshop <model>`.
-3. Test the gates in order. A gate fails when its test in K12 fails, when an open request on its part exists, or when the model is not valid.
-4. Find the first gate that fails. Each gate before it passes, so its needs pass.
+3. Test gates in their canonical order. Apply K12 to open requests, incomplete models, and validity. Report future-part diagnostics without claiming that an incomplete model passes.
+4. Find the first failing gate and its missing part. An explicit prerequisite request can require its own writer before that gate passes.
 5. Tell the person in one line: the gate, the part, and the elements that fail it.
-6. Load the skill whose description says that it writes that part. Give it the failing elements, the open requests on the part, and the sources. Never write the part yourself.
-7. When that skill reports done, go back to step 2. Never load the writer of a part whose gate passes.
-8. When the first failing gate is the reviews gate, load each skill whose description says that it reviews the model and writes nothing. Each fix that the person confirms becomes a request on its part. That request makes an earlier gate fail again, and the loop returns to it.
+6. Load the writer of the missing part. Supply failing elements, sources, open requests, and K13 permissions. If an explicit request needs another part first, dispatch that request to its writer and then return. Never write either part yourself.
+7. After the writer returns, retest the blocked gate or request. Apply the repeated-failure and request-cycle stop rules of K12. Otherwise return to step 2.
+8. At the reviews gate, load each skill whose description says that it reviews the model and writes nothing. Each approved fix becomes a request on its part and reopens that gate. When reviews converge under K12, close only the reviews gate. Continue to slice status, ownership, and chapter summaries.
 9. Stop when a stop rule below applies.
 10. If the person wants a forecast after the ownership gate, load the skill whose description says that it estimates delivery time.
 11. Write the final report. Use the result section below.
 
 ## Gate state in an .em.hcl model
 
-Test the gates in this order (H3). Each line names what to read.
+Read H3 for the gate order and K12 for their criteria. Use the relevant H section to locate each method fact. Do not maintain a second gate table here.
 
-| Gate | It passes when |
-| --- | --- |
-| roles | Each person and each system that the sources name is an `actor`, a `system`, or a `team`. |
-| events | Each business process of the sources has its `event` blocks. |
-| streams | Each internal event has `aggregate`, and each aggregate has `identity`. |
-| lifecycle states | Each aggregate has a `lifecycle` with its `state` blocks and end states. |
-| screens | Each human `actor` is the `actor` of at least one `screen`. |
-| commands | Each screen action and each trigger inside the system has a `command`. |
-| lifecycle moves | Each command on a stream is in a `transition` or an `invalid_transition`. |
-| automations | Each `automation` has a todo `readmodel` with `to = [processor.<id>]`. Each external event is read by an `automation`. |
-| external mappings | Each translation `automation` has a `field_source` for each field of its command. |
-| read models | Each screen field that shows data has a `readmodel` that feeds the screen. |
-| chapters | Each workflow is in one `chapter`. |
-| story order | Each workflow of the story is in `board { workflows = [...] }`. |
-| command scenarios | Each `state_change` and each `automation` has a `scenario` for each case that the business supports. |
-| read model scenarios | Each `readmodel` is the `then` target of at least one `scenario`. |
-| reviews | No review finding is open. Each one is fixed or is a `decision` with `kind = "accepted_debt"`. |
-| slice status | Each workflow has `status`. |
-| ownership | Each workflow and each internal `bounded_context` has `owner`. |
-| chapter summaries | Each complete `chapter` has a `description`. |
-
-An open `hotspot` with `kind = "request"` fails the gate of the part that its `concerns` names.
+Open requests identify their part through H10. A missing command, event, or other prerequisite goes to that part's writer. Preserve valid intermediate artifacts. Record unresolved needs rather than inventing syntax, references, or elements to silence a diagnostic.
 
 ## Stop rules
 
 1. Every gate passes.
-2. The review loop stops under K12: a review finds nothing new, or the person accepts each open finding as debt.
-3. The same gate fails twice with the same failing elements after its writer ran. Stop and ask the person how to go on.
-4. The writer of a part stops with an error that it cannot repair (H0). Stop and report the error.
-5. The person says to stop.
+2. A gate or prerequisite request reaches the repeated-failure limit of K12, or unresolved requests form a cycle. Report the failing elements and requests.
+3. A writer stops with a language error that it cannot repair, a missing material business decision, or permission blocked under K13. Report the blocker without changing scope or another part.
+4. The person says to stop.
 
 ## Large sources in layers
 
@@ -99,8 +77,8 @@ This skill writes nothing in the model. After each pass, it tells the person the
 ## Done when
 
 1. The report names each gate in order with pass or fail, and the first failing gate with its part and its failing elements.
-2. No writer of a part was loaded while an earlier gate failed.
+2. Writers ran only for a failing gate or its explicit prerequisite request. The report names any prerequisite dispatch and its result.
 3. This skill wrote nothing in the model. Each change came from the skill that writes that part.
 4. The run ended on a stop rule, and the report names it.
 5. Each review finding is fixed or accepted as debt, or the report names the open ones.
-6. In an `.em.hcl` model, the last `emhcl validate --profile workshop` shows no core error.
+6. In a completed HCL run, workshop validation has no core error. In a blocked or incomplete run, the report preserves the outstanding diagnostics and their prerequisite requests.

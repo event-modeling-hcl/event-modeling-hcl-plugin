@@ -4,14 +4,10 @@ This file maps each part of the method contract to Event Modeling HCL v0.8.0. A 
 
 ## H0 Working on an `.em.hcl` model
 
-1. The model is one `.em.hcl` file or one folder of `.em.hcl` files. Keep its shape. In a folder, IDs are global across the member files.
-2. Write only the blocks and attributes that this binding names for your part. Never invent a block or an attribute. A method fact that HCL cannot hold stays out of the model. Report it to the person as a representation gap.
-3. Use lower-snake-case labels that match `^[a-z][a-z0-9_]*$`. Write `title` only when the text differs from the label.
-4. References are unquoted traversals, such as `event.rental.bike_rented`. Never quote a reference.
-5. Each `field` and `subfield` needs an explicit `type`: a built-in type or a `field_type` traversal.
-6. After each change, run `emhcl fmt -w <model>` and then `emhcl validate --profile workshop <model>`. Repair each core error (`EM000` to `EM305`) that your change caused. Stop after two failed repairs of one code on one element, and report the code, the location, and both attempts.
-7. Copy tool output lines unchanged. Your own findings never carry an EM code.
-8. Never change a workflow whose `status` is `review`, `done`, or `informational` unless the person asks for that change.
+1. Before HCL work, read the installed [language authority](../../event-modeling-hcl/SKILL.md) and its applicable references. If it is already loaded, reuse it rather than loading it recursively.
+2. This binding maps method parts to HCL. The language authority owns legal syntax, types, CLI commands, diagnostic codes, and tool reports. Never invent a construct. Report a method fact that HCL cannot express as a representation gap.
+3. Keep the model's file or folder shape. IDs are global across all member files. Apply K13 before any direct edit or tool write, including formatting and migration.
+4. Follow the language authority for formatting and validation within the permitted scope. Copy tool output unchanged. Your own business findings never carry an EM code. A valid encoding does not establish business completeness.
 
 ## H1 Roles
 
@@ -40,9 +36,9 @@ Name the event in past tense as a label, such as `bike_rented`.
 
 ## H3 Slices, chapters, and story order
 
-A chapter and the board hold workflows, and a workflow is one slice: a `state_change` for one command, a `state_view` for one read model, or an `automation` for one processor. HCL has no place for a chapter of events or an order of events without workflows. Never create a workflow only to hold an event, a chapter, or a position in the story.
+A chapter and the board hold workflows, and a workflow is one slice. A `state_change` holds one command, and a `state_view` holds one read model. An `automation` holds one processor, its pending-work read model, and its issued command. HCL has no place for a chapter of events or an order of events without workflows. Never create a workflow only to hold an event, a chapter, or a position in the story.
 
-1. A workflow exists only for a slice that K3 identifies. The writer of the part that adds the first element of a slice creates its workflow: the screens writer for a screen action (`state_change`) or a screen that only shows data (`state_view`), the commands writer for a command without a screen, the automations writer for an automation, and the read models writer for a read model without a screen.
+1. The writer of the first element creates its slice's workflow. The screens writer creates the `state_change` of a screen action or the `state_view` of a display-only screen. The automations writer creates every `automation`. The commands writer creates a `state_change` only for a deliberately omitted issuer under K1. The read models writer creates a `state_view` without a screen. A processor's command stays in its existing automation.
 2. Until the slices exist, HCL has no place for the order of the story. The events, the stream identities, and the lifecycle states hold the facts that exist so far. A state records its path and whether it is an end, not its position. The order of the states appears only when the transitions exist, and the story order appears only when the board exists.
 3. In an `.em.hcl` model, close the gates of K12 in this order: roles, events, streams, lifecycle states, screens, commands, lifecycle moves, automations, external mappings, read models, chapters, story order, command scenarios, read model scenarios, reviews, slice status, ownership, chapter summaries. A lifecycle move names a command, so the lifecycles gate closes in two steps: states before the commands, moves and refused moves after them.
 4. The chapters writer writes `chapter "<id>" { workflows = [...] }` from the slices of each journey. A chapter needs at least one workflow (`EM005`). A workflow is in one chapter only (`EM014`). The chapter of an event follows from its workflows.
@@ -87,21 +83,26 @@ A lifecycle names commands. Write the states first. Write each move and each ref
 | Command fields | `field` blocks or a `fields` list. A context value (time, acting user, tenant) is a field with `generated = true`. |
 | Precondition | An `invalid_transition` (H5) and a scenario with `error` (H9) |
 
-Use `external_trigger = true` only when no issuer can be modeled. Never use `triggers` or `api_endpoint` as an issuer.
+Use `external_trigger = true` only for an explicitly documented issuer omitted under K1. Record its real trigger and the reason. It never replaces an unknown or modelable issuer by default. Never use `triggers` or `api_endpoint` as an issuer.
 
 ## H7 Automations and external mappings
 
 | Method fact | HCL |
 | --- | --- |
 | Automation | `automation "<id>"` workflow with a `processor` |
-| Todo list | A `readmodel` in the same workflow, with `question`. `from` lists the events that open and close items. `to = [processor.<id>]`. |
-| Translation step | An `automation` whose todo list reads an event of an external `bounded_context`. There is no `translation` keyword. |
-| Worker step | An `automation` whose todo list reads internal events only |
+| Todo list | A `readmodel` in the same workflow, with `question`. `from` follows the worker or translation rule below. `to = [processor.<id>]`. |
+| Translation step across an outside-system boundary | An `automation` whose todo list reads an event of an external `bounded_context`. There is no `translation` keyword. |
+| Translation step across an internal team boundary | An `automation` over the foreign team's facts. Preserve its business translation contract in its description and decisions. A tool can classify it as a worker because its context is internal. Record a hotspot for the boundary that the tool cannot see. |
+| Worker step | An `automation` whose todo list reads internal events for a local business decision |
 | Payload mapping | `field_source` blocks inside the translation workflow |
 | Correlation key | `correlation_key = true` on the field |
 | Duplicate key | `deduplication_key = true` on the field |
 
-A todo list has no status field. Its `from` list includes the event that closes the work.
+A todo list has no status field. For a worker, `from` includes events that open work and completion events that close it. For a translation, `from` reads the foreign facts only. Never feed its internal result back into that projection. Classify the step by its business responsibility, not only a CLI label.
+
+K3 requires pending work for a complete methodological automation. Only an explicit request for a minimal legal encoding can omit it. Record the lost business detail without claiming that the method gate passes.
+
+The automations writer creates the workflow, processor, and todo list. The commands writer supplies its command, and the events writer supplies its internal event. Requests under K0 connect these writers without transferring ownership.
 
 ## H8 Read models and field origin
 
@@ -121,9 +122,9 @@ An event or command field has exactly one input (`EM202`). Each input reaches th
 
 | Method fact | HCL |
 | --- | --- |
-| Command scenario | `scenario` in the `state_change` workflow: `given` events, one `when` command, `then` events or `error` |
+| Command scenario | `scenario` in the workflow that owns the command (`state_change` or `automation`): `given` events, one `when` command, `then` events or `error` |
 | Case of a scenario | `case = "<value>"`: `happy_path`, `variant`, `refused_input`, `state_violation`, `business_duplicate`, `limit`, `authorization`, `alternative_path`, `external_failure`, `compensation` |
-| Read model scenario | `scenario` in the `state_view` workflow: `given` events, no `when`, `then` read model |
+| Read model scenario | `scenario` in the workflow that owns the read model (`state_view` or `automation`): `given` events, no `when`, `then` read model |
 | Read model case | `case = "appear"`, `"change"`, or `"disappear"` |
 | A view before any event | `empty_history = true` and no `given` step |
 | An intentionally empty list | `expect_empty_list = true` on the `then` step |
@@ -134,6 +135,8 @@ An event or command field has exactly one input (`EM202`). Each input reaches th
 | A note | `comment { description = "..." }` inside the scenario |
 
 Write `case` only when the business supports that case. A rejection is `then { error = "..." }` with the reason in domain words.
+
+Keep the real prior event references when they come from another chapter. Never replace them with empty history. An automation action scenario tests dispatch or no dispatch. Separate command scenarios test acceptance or refusal. If a legal form cannot state a supplied intention, preserve a semantic note and report the representation gap.
 
 ## H10 Records
 
@@ -155,7 +158,7 @@ A record `on` names one target: a catalog item, a workflow, an owner, an actor, 
 
 | Method fact | HCL |
 | --- | --- |
-| Slice | One workflow. A `state_change` holds one command, a `state_view` one read model, an `automation` one processor. |
+| Slice | One workflow. A `state_change` holds one command, a `state_view` one read model, and an `automation` one processor with its pending-work read model and issued command. |
 | Slice status | `status` on the workflow: `created`, `planned`, `assigned`, `in_progress`, `review`, `blocked`, `done`, or `informational` |
 | Owner team | `owner = team.<id>` on the workflow, and on the `bounded_context` for its events |
 | Chapter summary | `description` of the `chapter`, as a multi-line string |

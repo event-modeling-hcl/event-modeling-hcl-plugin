@@ -55,13 +55,13 @@ If a command or its events do not exist, write no scenario for it. Write a reque
 
 ### Automation actions
 
-- Given: the events or todo list rows that make the automation act.
+- Given: actual setup events and the triggering event last. Use todo list rows as observable context, not as invented prior facts.
 - When: the automation.
 - Then: the command that it issues, with its values. If it issues nothing, say so.
 
 ### Rules from different sources
 
-- From a document: each rule fact gives a success scenario. If the rule can be broken, it also gives a rejection.
+- From a document: each supported business rule gets a scenario for its stated outcome. Add a rejection only when the rule supports it. Do not invent a success or error.
 - From code: take only business rules from tests and comments. Do not copy a test line by line. Mocks and setup calls never become steps.
 - From an event of another system: write a scenario for each failure of the translation that the business cares about, such as no match to a known item.
 
@@ -90,6 +90,6 @@ It reports to the person: the scenarios per command, each case that the domain e
 4. Each rejection has no event in its then step and an error in domain words.
 5. Each essential value (K6) has a concrete example.
 6. Each title names the rule in business words.
-7. No scenario tests a technical case of K5.
+7. No generic technical test counts as business coverage. Supplied repeat, translation, and external-failure behavior remains covered under K5.
 8. No note holds a fact that a step can hold.
 9. No open request on command scenarios remains.

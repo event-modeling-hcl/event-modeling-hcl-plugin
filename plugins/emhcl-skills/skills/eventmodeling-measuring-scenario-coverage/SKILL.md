@@ -24,12 +24,12 @@ If a name fits more than one chapter, ask under K9. If the model is an `.em.hcl`
 ## Procedure
 
 1. Take one slice.
-2. Derive its cases from K5. Use the command cases for a state change slice and for an automation action. Use the read model cases for a state view slice and for a todo list.
-3. Keep only meaningful cases (K5). Drop technical cases (K5).
+2. Derive its cases from K5. For an automation slice, include its issued command, processor dispatch, and pending-work view. These are distinct behaviors of one slice.
+3. Keep meaningful business cases under K5. Generic technical tests do not count. A repeated delivery that prevents a second business fact can be meaningful.
 4. Take each existing scenario. Match it to the case whose given, when, and then it states exactly. A `case` value on a scenario is a hint, not proof. Read the steps.
-5. Do not count a scenario that repeats another one, tests a technical case, or describes a case that cannot occur in the process.
+5. Do not count repeated scenarios, generic technical tests, or impossible process cases. Preserve supplied acceptance behavior even when it does not count toward this measure.
 6. Compute the coverage: 100 times covered cases divided by meaningful cases. Round down to a whole number.
-7. If a slice only passes data through and has one scenario, its coverage is 100.
+7. A pass-through slice reaches 100 only when its scenarios cover every supported meaningful case. One happy path does not cover a supplied duplicate or correlation rule.
 8. If you cannot derive any meaningful case for a slice, give no value. Say why.
 9. List the uncovered cases as missing scenarios. Give each one a short title.
 10. Add a given, a when, and a then to each missing scenario when the model lets you state them. Write one short sentence each, in the words of the model.
@@ -59,7 +59,7 @@ Read `references/examples.md` when you need a sample report.
 
 1. Every slice in scope has a coverage value or a stated reason for no value.
 2. Every value equals 100 times covered divided by meaningful, rounded down.
-3. No technical case counts as covered or as missing.
+3. Generic technical tests count neither as covered nor as missing business cases. Supplied repeat, translation, and external-failure outcomes count when meaningful under K5.
 4. Each slice lists at most 10 missing scenarios, most important first.
 5. Each missing scenario uses the words of the model and no guessed value.
 6. The report gives the average and the three lowest slices.

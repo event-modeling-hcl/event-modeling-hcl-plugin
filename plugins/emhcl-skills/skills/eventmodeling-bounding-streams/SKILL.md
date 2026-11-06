@@ -3,7 +3,7 @@ name: eventmodeling-bounding-streams
 description: Gives each event stream one business identity and fixes streams that hide a collection, a log, or two identities. Use it when someone asks which aggregate or stream an event belongs to, what the consistency boundary of a thing is, or why a stream keeps growing. Writes streams only. Does not write lifecycle states or moves, events, or read models.
 metadata:
   version: "1.0.0"
-  contract: "K0 K1 K8 K9 H0 H5 H10"
+  contract: "K0 K1 K2 K8 K9 H0 H5 H10"
 ---
 
 # Bounding event streams
@@ -28,6 +28,7 @@ If the model is an `.em.hcl` file or folder, follow the H sections of `reference
 1. Resolve each open request on your part first.
 2. For each stream, ask the golden question: "This stream is the history of exactly which one thing?"
 3. Write the answer as one identity, such as the booking number of one booking. Never write a category, such as "bookings".
+   Identify each component of a compound identity under K2. Preserve evidenced identity vocabulary rather than replacing it with a generic key.
 4. If no single identity answers the question, the stream is a collection or a log. Go to step 8.
 5. Put each event next to the identity. Ask: "Did this event happen to this one thing?"
 6. If every event passes, keep the stream, even when its history is very long.
@@ -39,6 +40,7 @@ If the model is an `.em.hcl` file or folder, follow the H sections of `reference
 12. If the stream holds the active life of a thing and its long-term record, split them only when the two have different users, rules, or retention. Record the reason as a decision (K8).
 13. If one business change is spread over several events, or one event holds several changes, write a request (K8) concerning `event`.
 14. If an event lacks the identity field of its stream, write a request (K8) concerning `event`. If the identity type does not exist, write a request concerning `field_type`.
+   Apply the multi-stream command test of K1. Request changes to commands when a boundary correction needs a later event-connected step.
 15. Record each split, merge, and removed stream as a decision (K8). Follow K9 when the identity of a thing is unclear.
 
 Read `references/examples.md` when you need worked cases from libraries, banks, or subscription services.
