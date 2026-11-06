@@ -28,6 +28,15 @@ If the model is an `.em.hcl` file or folder, follow the H sections of `reference
 1. Resolve each open request on your part first.
 2. Name the main things whose story the domain tells, for example a rental, a bike, a payment.
 3. For each thing, name the value that tells one instance from another. This is its identity.
+
+   If the work is unclear, use the offline-first reset in K1 before listing its events. Walk one real case. Ask:
+   - What arrives, and who receives it?
+   - Which sheet or prior fact does the actor read?
+   - What does the actor decide and record?
+   - Who receives the result, and what starts their next action?
+
+   Ask about a correction, a missing fact, a delay, and a disputed decision. Use the answers as evidence or questions on your part. Send requests for changes to other parts under K0.
+
 4. Walk the work of each role and each system actor. List the steps they take and where they choose.
 5. For each step, ask "did something change that the business keeps?" If yes, write an event.
 6. Capture events fast first. Remove the weak ones after the list stops growing.

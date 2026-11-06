@@ -80,6 +80,16 @@ A skill that needs a change in a part that it does not write makes no change the
 27. For each step, ask who acts, what starts the action, and what the actor must know first.
 28. Remove each step that exists only because of software, like a loading spinner, a cache refresh, or a session test.
 
+Use paper to ask about the work, not to invent its rules. If the discussion follows screens or tools, reset it around one real case. Ask what each actor receives, reads, decides, records, and passes to the next actor. Ask what happens when information is wrong, missing, late, or disputed.
+
+Keep the sources and their certainty under K8. An old screen or code path supplies evidence, not a confirmed business rule. Record a conflict or an unsupported rule as an open question. Do not discard observed behavior because it came from software.
+
+Keep real system actors and outside sources in the model. A paper-world stand-in explains their business job. It does not replace them with invented people. A standing instruction does not establish whether a person or a system performs the work.
+
+A sheet represents information that an actor reads. It does not establish the authority that enforces a command's rules. Preserve rule 10 when the displayed information can be stale.
+
+Use the reset only for the unclear work. Do not restart completed discovery or require a separate paper model. Each writer still writes only its own part under K0.
+
 ### Concrete over generic
 
 29. Pick one concrete flow of the business and fill it with real cases and real values. A reader must learn how the business works from the model.

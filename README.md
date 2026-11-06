@@ -63,6 +63,14 @@ To model a domain from start to end, ask for a complete event model. The skill
 order. To do one step, ask for that step, for example "list the events of this
 domain" or "write the scenarios of this command".
 
+If a discussion follows screens instead of work, ask for a paper-world reset.
+The event discovery and workshop skills walk one real case through its actors,
+decisions, information, and handoffs. They keep source evidence and real system
+actors. The reset does not add a gate or require a separate paper model.
+
+Use Axiomatic Design when reviewing skill responsibilities or choosing software
+boundaries after business discovery. It is not a required workshop step.
+
 You also need one Git connector in Claude:
 
 - GitLab: the official GitLab MCP server. em-change needs GitLab 19.4 or later,

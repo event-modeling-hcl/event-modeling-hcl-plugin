@@ -3,7 +3,7 @@ name: eventmodeling-facilitating-workshop
 description: Plans and guides a live event modeling workshop with a group of people. It builds the session plan with a time box for each model part in gate order, covers participants, pacing, quiet and dominant people, disagreement, the remote format, and writes the follow-up summary. Use it when someone asks to prepare, run, or follow up an event modeling workshop or session with a team, a product owner, or domain experts. Writes nothing in the model. Does not build a model alone without a group.
 metadata:
   version: "1.0.0"
-  contract: "K0 K9 K11 K12 H0"
+  contract: "K0 K1 K8 K9 K11 K12 H0"
 ---
 
 # Facilitating a workshop
@@ -71,6 +71,21 @@ The times are starting values. Adjust them to the size of the domain and the spe
 6. When the time box ends, move on. The open items of the part stay open questions.
 
 In the events part, let the group name events freely first. Filter them afterward. In the scenario parts, give each role its own lens. The domain expert judges the business behavior. The developer judges whether the team can build it. The tester judges whether the team can test it.
+
+## Paper-world reset
+
+If people describe controls instead of work, use the offline-first reset in K1. Also use it for unclear handoffs or conflicting terms. Keep the exercise inside the current part's time box.
+
+1. Ask one participant to walk one real case with people, paper, and pens.
+2. Start with who requests the action and what starts the request.
+3. Ask who receives the paper and what they read before acting.
+4. Walk the supplied eligibility rules and both the allowed and refused outcomes inside this exercise.
+5. Ask what each outcome records and what passes to the next actor.
+6. Ask another participant to describe a correction, a delay, or a disputed decision in that case.
+7. Read the account back and ask which statements are confirmed.
+8. Give the answers and their sources to the writer of the affected part.
+
+If the exercise exposes work in another part, send it to that part's writer. Keep unresolved decisions as open questions under K8. Resume the current part without adding another gate or writing a separate paper model.
 
 ## Pacing
 

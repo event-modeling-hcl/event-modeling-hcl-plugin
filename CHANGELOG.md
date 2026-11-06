@@ -5,6 +5,14 @@ has the form `emhcl--v<version>`, as `claude plugin tag` makes it.
 
 ## [Unreleased]
 
+### Changed
+
+- Paper-world discovery now includes questions about information, decisions,
+  handoffs, corrections, and delays in the event and workshop skills.
+- Shared discovery rules retain source evidence, actual system actors, and
+  command authority without restarting completed work or adding a paper model.
+- The general Event Modeling skill makes the paper-to-software handoff explicit.
+
 ## [0.2.0]
 
 ### Added

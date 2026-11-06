@@ -377,6 +377,20 @@ The repository differs from the plan in these points:
 - em-view and em-validate run without `.emhcl.yml`, with a temporary pin.
 - A release tag has the form `emhcl--v<version>`, as `claude plugin tag` makes it.
 
+## Paper-world discovery boundary
+
+Paper-world questions belong to business discovery. They expose decisions and information handoffs without copying software controls into the business story. They do not require a separate model, writer, or gate.
+
+The shared rules live in K1 of `contract/method.md`. The event writer uses them to discover facts. The workshop facilitator uses a reset exercise and sends the answers to the affected writer. Neither responsibility expands into writing the other model parts.
+
+The reset preserves source evidence under K8 and actual system actors. A paper stand-in explains an automation's business job, but it does not establish human execution. A sheet informs an actor, but it does not become the authority that validates a command.
+
+Before encoding a paper account, resolve the system boundary, actual executors, command authority, and recorded failure outcomes. Unknown decisions remain questions. The existing representation rules must preserve business meaning rather than change it to fit the format.
+
+Use Axiomatic Design for changes to skill responsibilities, shared contracts, and downstream software boundaries. Do not require its matrices during an ordinary business workshop. File separation alone does not prove that changing one responsibility leaves every other outcome unchanged.
+
+The focused behavior cases in `plugins/emhcl-skills/evals/` cover replacement discovery, stale displayed information, actual automation, and continuation of existing work. These cases exercise the boundaries. They do not prove whole-system independence or provide probabilities for the Information Axiom.
+
 ## Sources
 
 - `plugins/emhcl/skills/em-collaborate/SKILL.md` and its `references/` and `scripts/` folders

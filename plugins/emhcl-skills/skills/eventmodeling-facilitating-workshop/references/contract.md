@@ -32,6 +32,123 @@ Records (K8) belong to the element they are on. A skill writes records only on e
 
 A skill that needs a change in a part that it does not write makes no change there. It writes a request (K8) on the element and names the part. The writer of that part resolves each open request on its part before it reports done.
 
+## K1 Elements
+
+### Elements
+
+1. An event is a business fact that already happened. Name it in the past tense with business words, like "Bike Reserved".
+2. An event never changes after it exists. A correction is a new event, like "Rental Fee Corrected".
+3. An event holds only captured facts. A total, a count, an average, or a balance that changes when its source data changes is a read model field. A value that the business fixes at the moment it accepts a command, such as the price of an order, is a domain decision. Record it as an open question until the business decides it.
+4. An event produced inside this system records a command that succeeded. An event owned by an outside system records its reported fact without a command inside this model.
+5. A command is the business intent of one actor. Name it in the imperative with business words, like "Reserve Bike".
+6. A command succeeds only when its stated preconditions hold. Otherwise the business rejects it and no event exists.
+7. A command produces one or more events on success. A command that never produces an event is a mistake, unless the model states why.
+8. A read model is a view built only from events, shaped for one query. Name it as a noun phrase for the data, like "Open Reservations".
+9. A read model never names the machinery that builds it. "Reservation Projector" and "Rental Repository" are wrong names.
+10. A read model never drives the decision of a command. A command decides from its own fields and from the earlier events of its stream.
+11. Nothing requires a read model to exist. Add one only when a screen or an automation reads it.
+12. A screen is what a person sees and acts on. Name it with the words that a person uses for it, like "Return Bike Page".
+13. An automation is a system actor that reacts to events, like a scheduler or a processor. Name it for its business job, like "Late Fee Charger".
+14. One element used in two places of the model is one element. It keeps one name, and its scenarios exist only once.
+
+### Causality
+
+15. Each internal event names the command that caused it. An event of an external context names its outside source instead. Do not invent a local command to cause an outside fact.
+16. A modeled command has one screen or automation as its issuer. Two modeled issuers for one command are a finding. If the issuer is deliberately outside the model, record the trigger and the reason for omitting it. The notation binding encodes this omission. Never use that exception to hide an unknown cause.
+17. A command names a specific role or system actor, never a generic "User".
+18. A flow starts with a screen interaction, an automation reaction, or an outside trigger documented under rule 16. A command with no explained cause is a gap.
+
+### Event or read model
+
+19. To decide between an event and a read model, ask these questions in order:
+    1. Did an actor do something that the business records? Then it is an event.
+    2. Is it only a calculation from other facts? Then it is a read model.
+    3. Does the value change each time a source event arrives? Then it is a read model.
+    4. Does it stay the same forever once recorded? Then it is an event.
+20. A stock level, an account balance, a search index, or a running total is always a read model.
+21. If a value comes from a scheduled calculation and records no new decision, it is a read model.
+
+### Open question or decided failure
+
+22. An open question is a point that nobody decided yet. Record it as an open question in the model. Use the open question record of K8.
+23. A decided failure is a rejection whose behavior the business already decided. Write it as a scenario with an error, never as an open question.
+24. A rejection is not an event. A failure is an event only when the business records it as a fact, like "Payment Declined" on an invoice.
+25. An open question that hides a decided failure counts as a false gap. Replace it with the scenario.
+
+### Offline-first
+
+26. Model the process first as people run it on paper, without software.
+27. For each step, ask who acts, what starts the action, and what the actor must know first.
+28. Remove each step that exists only because of software, like a loading spinner, a cache refresh, or a session test.
+
+Use paper to ask about the work, not to invent its rules. If the discussion follows screens or tools, reset it around one real case. Ask what each actor receives, reads, decides, records, and passes to the next actor. Ask what happens when information is wrong, missing, late, or disputed.
+
+Keep the sources and their certainty under K8. An old screen or code path supplies evidence, not a confirmed business rule. Record a conflict or an unsupported rule as an open question. Do not discard observed behavior because it came from software.
+
+Keep real system actors and outside sources in the model. A paper-world stand-in explains their business job. It does not replace them with invented people. A standing instruction does not establish whether a person or a system performs the work.
+
+A sheet represents information that an actor reads. It does not establish the authority that enforces a command's rules. Preserve rule 10 when the displayed information can be stale.
+
+Use the reset only for the unclear work. Do not restart completed discovery or require a separate paper model. Each writer still writes only its own part under K0.
+
+### Concrete over generic
+
+29. Pick one concrete flow of the business and fill it with real cases and real values. A reader must learn how the business works from the model.
+30. If the system is a generic platform, model one real case that the platform handles. Do not model the structure of the platform.
+31. A command like "Save Record" with one field "content" says nothing. "Record Tire Pressure" with "frontPsi: 38" says what happens.
+
+### Anti-patterns
+
+32. A command that only loads data, like "Load Rentals", is a query. Make it a read model.
+33. An event that records a user interface action, like "Menu Opened", is not a business fact. Leave it out unless the business records it.
+34. An event that records machinery, like "Request Sent" or "Response Received", hides the fact. Find the business fact under it.
+35. An event whose value changes as source data changes is a calculated event. Make it a read model.
+36. An event name that states a possible future, like "Order Can Ship", is wrong. Name the fact that happened.
+37. An event that only states a waiting state, like "Payment Pending", is wrong. Name the step that happened, like "Payment Requested".
+
+## K8 Records
+
+A record holds a fact about the model that is not part of the flow. Records never change the flow, the story order, or a chapter.
+
+### Kinds of records
+
+1. An open question states information that is missing. Word it so that the person who decides can answer with one line.
+2. An assumption states a gap that you filled. Word it as a question that a person confirms.
+3. A request states a change in a part that you do not write. Name the part. Word it as a question to the writer of that part.
+4. A question, an assumption, and a request can name a category from K11 and offer 2 or 3 answers as options.
+5. A record stays open until someone answers it. Answering it closes it. Deleting it does not close it.
+6. A rejection with a known outcome is not an open question. It is a command scenario with an error (K5).
+7. Place each record on the element that it is about. A record about the whole model has no element.
+
+### Decisions
+
+8. A decision states a choice and its reason. Write a decision when you make it, not at the end.
+9. These choices are decisions: a piece of evidence becomes an element, a code or document term becomes a business term, the person overrides the source, two items merge or one item splits, an item stays out of the model on purpose, and a read model keeps wide fan-in.
+10. An answer from a person is a decision. Its evidence names the person.
+11. A finding that the person accepts as debt is a decision of the kind "accepted debt". Name the finding and its signal when a signal exists.
+12. Each item that a source holds and the model leaves out is a decision with its reason, for example "out of focus" or "boilerplate".
+
+### Sources and certainty
+
+13. An evidence source is a document, code, a running application, or a person. Give it a location that a reader can open.
+14. Give each element that a source supports an evidence record with one certainty:
+    - stated: the source says it clearly.
+    - implied: it follows from the source.
+    - assumed: no source gives it, and you filled the gap.
+15. Stated and implied evidence names its source. Never label an assumption as stated or implied.
+16. If a person confirms an assumption, change its certainty to stated and name the person as the source.
+17. If the person contradicts the code, follow the person. Keep the behavior of the code as a decision.
+18. Make each location precise. For a document, name the section and the page. For code, give the path from the code root and the line, and add the class and method, the table, the endpoint, the test, or the template when one exists. Never write a vague location such as "the order code".
+19. Copy numbers, limits, weights, dates, and document names from a source word for word.
+20. Use business names in element names. Put code names in the evidence location.
+
+### Analysis passes over code
+
+21. Each pass over code is one evidence source of the kind code. Its location names the code root and the short commit hash of the analyzed code. Add "+dirty" when the scope had uncommitted changes. Write "no git" when no version control exists.
+22. Its description names the date, the pass number, the scope (the chapters), and the result, even when the pass found nothing new.
+23. Never change or delete the evidence source of an earlier pass. Passes only grow.
+24. The latest pass of a chapter is its baseline. A pass that compares code with the model adds its evidence source only after each of its findings is fixed, declined, or accepted as debt.
+
 ## K9 Interaction
 
 1. Ask only for information that is missing or ambiguous. Missing means the step needs it and no source gives it.

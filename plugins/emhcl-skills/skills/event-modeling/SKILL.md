@@ -90,6 +90,17 @@ a missing decision changes the model materially. If useful work can continue,
 record the gap and continue. If the user says not to block, make a visible,
 correctable assumption and retain a hotspot for an assumed material rule.
 
+If the description follows screens instead of work, walk one real case with
+people, paper, and pens. Ask what each actor receives, reads, decides, records,
+and passes on. Use this reset for the unclear part, not completed discovery.
+Keep the original evidence and label new assumptions. Preserve real system
+actors when returning from the paper-world explanation.
+
+A paper account supplies business evidence, not a ready software design.
+Before encoding, resolve the system boundary, actual executors, command
+authority, and recorded failure outcomes. A sheet that informs a person does
+not become the authority that validates a command.
+
 ## Discover one flow at a time
 
 1. State scope and perspective if either is unclear.
