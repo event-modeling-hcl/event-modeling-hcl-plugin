@@ -10,6 +10,11 @@
       "name": "emhcl",
       "source": "./plugins/emhcl",
       "description": "View, change, and review a team event model in .em.hcl files through Claude. Changes reach the default branch only through a merge request."
+    },
+    {
+      "name": "emhcl-skills",
+      "source": "./plugins/emhcl-skills",
+      "description": "Event Modeling skills: the method from discovery to delivery planning, and the skills that write and validate .em.hcl models with emhcl."
     }
   ]
 }

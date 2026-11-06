@@ -5,6 +5,34 @@ has the form `emhcl--v<version>`, as `claude plugin tag` makes it.
 
 ## [Unreleased]
 
+## [0.2.0]
+
+### Added
+
+- The plugin `emhcl-skills` 0.1.0, the home of the emhcl agent skills. It
+  holds the skills `event-modeling` 1.0.0 and `event-modeling-hcl` 3.1.0, moved
+  unchanged from emhcl v0.17.0 (specification v0.8.0), and 32 method skills
+  that write one part of the model each and name no other skill.
+- The method contract `contract/method.md` (K0 to K12), its HCL v0.8.0
+  binding `contract/hcl-binding.md` (H0 to H11), and `contract/CREDITS.md`.
+- `scripts/build-contract.sh`, which copies the contract sections that each
+  method skill lists into its `references/contract.md`, and checks them with
+  `--check`.
+- `scripts/check-source-overlap.sh`, which reports text that the method content
+  shares with the source skills of unknown license.
+- Three eval cases for each method skill. The eval `author-slice` moved to
+  `emhcl-skills`.
+
+### Changed
+
+- The plugin `emhcl` no longer vendors `event-modeling-hcl`. It depends on
+  `emhcl-skills`, which Claude Code installs with it.
+- The plugins support emhcl v0.17.0 and newer (specification v0.8.0), and
+  were tested with v0.17.0. The example pins emhcl 0.17.0.
+- `scripts/sync-upstream-skill.sh` became `scripts/sync-upstream.sh`. It copies
+  the example model at an emhcl tag and writes `compatibility.md` from the
+  front matter of `event-modeling-hcl`.
+
 ## [0.1.0]
 
 ### Added

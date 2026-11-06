@@ -1,13 +1,23 @@
-# emhcl plugin for Claude
+# emhcl plugins for Claude
 
-An open-source Claude plugin for teams that keep an event model in
+Two open-source Claude plugins for teams that keep an event model in
 [Event Modeling HCL](https://github.com/event-modeling-hcl/spec) (`.em.hcl`)
-files. Each person on a team can view, change, and review the model through
-Claude. A change reaches the default branch only through a merge request in
-GitLab or GitHub, which a person reviews and merges.
+files:
 
-The plugin works in Claude chat, Cowork, and Claude Code. It uses the Apache-2.0
-license, the same license as [emhcl](https://github.com/event-modeling-hcl/eventmodeling-hcl).
+- `emhcl-skills` holds the agent skills for Event Modeling: 32 method skills
+  from discovery to delivery planning, and the skills `event-modeling` and
+  `event-modeling-hcl`, which write and validate `.em.hcl` models with emhcl.
+  It is the home of the emhcl agent skills.
+- `emhcl` lets each person on a team view, change, and review the model
+  through Claude. A change reaches the default branch only through a merge
+  request in GitLab or GitHub, which a person reviews and merges. It installs
+  `emhcl-skills` as a dependency.
+
+The plugins target specification v0.8.0 and emhcl v0.17.0 or newer.
+The existing `emhcl` plugin and the two transferred upstream skills use
+Apache-2.0. Release of the new method content awaits source-license review.
+See [contract/CREDITS.md](contract/CREDITS.md). A passing text-overlap scan
+does not establish license clearance.
 
 ## What it does
 
@@ -26,12 +36,32 @@ and never writes to the default branch.
 
 ## Install
 
-Add the marketplace and install the plugin:
+Add the marketplace and install the plugins:
 
 ```sh
 claude plugin marketplace add event-modeling-hcl/emhcl-plugin
 claude plugin install emhcl@event-modeling-hcl
 ```
+
+The second command also installs `emhcl-skills`. To use only the skills,
+without the Git procedures, install `emhcl-skills@event-modeling-hcl`.
+
+## The method skills
+
+Each method skill gives one outcome and writes one part of the model. No
+method skill names another skill. The skills exchange work only through the
+content of the model: records such as open questions, assumptions, requests,
+decisions, and evidence. The rules that several skills share are in
+[contract/method.md](contract/method.md), and their encoding in `.em.hcl` is in
+[contract/hcl-binding.md](contract/hcl-binding.md).
+`scripts/build-contract.sh` copies the sections that each skill lists into its
+`references/contract.md`. The design is in
+[docs/event-modeling-uncoupled-skills.md](docs/event-modeling-uncoupled-skills.md).
+
+To model a domain from start to end, ask for a complete event model. The skill
+`eventmodeling-orchestrating-workflow` then runs the gates of the contract in
+order. To do one step, ask for that step, for example "list the events of this
+domain" or "write the scenarios of this command".
 
 You also need one Git connector in Claude:
 
@@ -55,9 +85,9 @@ GitLab, in `.gitlab-ci.yml`:
 
 ```yaml
 include:
-  - remote: https://raw.githubusercontent.com/event-modeling-hcl/emhcl-plugin/emhcl--v0.1.0/ci-templates/emhcl.gitlab-ci.yml
+  - remote: https://raw.githubusercontent.com/event-modeling-hcl/emhcl-plugin/emhcl--v0.2.0/ci-templates/emhcl.gitlab-ci.yml
     inputs:
-      plugin_ref: emhcl--v0.1.0
+      plugin_ref: emhcl--v0.2.0
 ```
 
 Set the merge method to "Fast-forward merge" and turn on "Pipelines must
@@ -73,9 +103,9 @@ on:
     branches: [main]
 jobs:
   model:
-    uses: event-modeling-hcl/emhcl-plugin/.github/workflows/emhcl-model.yml@emhcl--v0.1.0
+    uses: event-modeling-hcl/emhcl-plugin/.github/workflows/emhcl-model.yml@emhcl--v0.2.0
     with:
-      plugin_ref: emhcl--v0.1.0
+      plugin_ref: emhcl--v0.2.0
     permissions:
       contents: read
       pages: write
@@ -98,30 +128,39 @@ Five design parameters each control one requirement:
 | Part | File | Controls |
 | --- | --- | --- |
 | DP1 validator pin | `plugins/emhcl/skills/em-collaborate/scripts/install-emhcl.sh` | The emhcl release in Claude and in CI |
-| DP2 vendored skill | `plugins/emhcl/skills/event-modeling-hcl/` | The language rules, copied without change from emhcl |
+| DP2 language skill | `plugins/emhcl-skills/skills/event-modeling-hcl/`, `references/compatibility.md` | The language rules, from the plugin `emhcl-skills`, and the emhcl range that they support |
 | DP3 Git port | `plugins/emhcl/skills/em-collaborate/references/git-operations.md` | Seven Git operations, bound to GitLab and GitHub tools |
 | DP4 diagram publisher | `plugins/emhcl/skills/em-collaborate/references/diagrams.md` | Diagrams as Claude artifacts |
 | DP5 CI templates | `ci-templates/emhcl.gitlab-ci.yml`, `.github/workflows/emhcl-model.yml` | The merge gate and the canonical diagram |
 
 All procedures live in one skill, `em-collaborate`. Each command is a one-line
-entry point to a procedure.
+entry point to a procedure. [docs/design.md](docs/design.md) describes the
+design as built: the design matrix, the contract of each part, and the
+residual risks.
 
 ```
 emhcl-plugin/
 ├── .claude-plugin/marketplace.json
 ├── plugins/emhcl/
-│   ├── .claude-plugin/plugin.json
-│   ├── skills/
-│   │   ├── event-modeling-hcl/            # DP2: vendored upstream skill, unchanged
-│   │   └── em-collaborate/
-│   │       ├── SKILL.md
-│   │       ├── references/                # procedures, git-operations, diagrams, configuration, compatibility
-│   │       └── scripts/                   # install-emhcl.sh (DP1), check-compatibility.sh
+│   ├── .claude-plugin/plugin.json         # depends on emhcl-skills
+│   ├── skills/em-collaborate/
+│   │   ├── SKILL.md
+│   │   ├── references/                    # procedures, git-operations, diagrams, configuration, compatibility
+│   │   └── scripts/                       # install-emhcl.sh (DP1), check-compatibility.sh
 │   ├── commands/                          # em-setup, em-view, em-validate, em-change, em-review, em-sync
 │   └── evals/                             # claude plugin eval suite
+├── plugins/emhcl-skills/
+│   ├── .claude-plugin/plugin.json
+│   ├── skills/
+│   │   ├── event-modeling/                # business meaning, from emhcl v0.17.0
+│   │   ├── event-modeling-hcl/            # DP2: language and emhcl operations, from emhcl v0.17.0
+│   │   └── eventmodeling-*/               # 32 method skills, each with a generated references/contract.md
+│   └── evals/                             # three cases for each method skill
+├── contract/                              # method contract and HCL binding (DP0)
 ├── ci-templates/emhcl.gitlab-ci.yml       # DP5 for GitLab
 ├── .github/workflows/emhcl-model.yml      # DP5 for GitHub Actions
-├── scripts/sync-upstream-skill.sh         # copies the upstream skill and example at a tag
+├── scripts/build-contract.sh              # copies contract sections into the method skills
+├── scripts/sync-upstream.sh               # copies the example at a tag, writes compatibility.md
 ├── examples/pet-clinic/                   # upstream folder model, plus .emhcl.yml
 └── tests/                                 # script and structure tests
 ```

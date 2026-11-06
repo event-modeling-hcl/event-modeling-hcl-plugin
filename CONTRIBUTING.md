@@ -1,11 +1,15 @@
 # Contributing
 
-Thank you for helping. This plugin adds team procedures on top of emhcl. Put
-each change in the part that owns it:
+Thank you for helping. This repository holds two plugins: `emhcl`, which adds
+team procedures on top of emhcl, and `emhcl-skills`, the home of the emhcl
+agent skills. Put each change in the part that owns it:
 
 | Change | Where |
 | --- | --- |
 | The Event Modeling HCL language, diagnostics, or the diagram page | Upstream: [eventmodeling-hcl](https://github.com/event-modeling-hcl/eventmodeling-hcl) or [spec](https://github.com/event-modeling-hcl/spec) |
+| How agents write, repair, and validate `.em.hcl` | `plugins/emhcl-skills/skills/event-modeling-hcl/` |
+| A rule that more than one method skill uses | `contract/method.md`, or `contract/hcl-binding.md` for its encoding. Then run `scripts/build-contract.sh`. |
+| One step of the method | `plugins/emhcl-skills/skills/eventmodeling-<step>/` and its three evals in `plugins/emhcl-skills/evals/` |
 | How Claude installs emhcl | `plugins/emhcl/skills/em-collaborate/scripts/install-emhcl.sh` |
 | A Git connector tool name or parameter | `plugins/emhcl/skills/em-collaborate/references/git-operations.md` only |
 | How diagrams become artifacts | `plugins/emhcl/skills/em-collaborate/references/diagrams.md` |
@@ -14,8 +18,15 @@ each change in the part that owns it:
 
 Rules that keep the design uncoupled:
 
-- Do not edit `plugins/emhcl/skills/event-modeling-hcl/` or `compatibility.md`
-  by hand. Run `scripts/sync-upstream-skill.sh <tag>`.
+- Do not edit `compatibility.md` or a `references/contract.md` by hand. Run
+  `scripts/sync-upstream.sh <tag>` or `scripts/build-contract.sh`.
+- A method skill never names another skill, and never restates a rule of the
+  contract. It writes only its own part of the model and sends other changes
+  as request records. The structure tests fail when a skill names another
+  skill.
+- A change to the language skill `event-modeling-hcl` that follows a new
+  emhcl release changes `metadata.spec_version` and `metadata.emhcl_min` in
+  its front matter. Then run `scripts/sync-upstream.sh <tag>`.
 - Do not put an emhcl version in a CI template. The tests fail when you do.
 - Only `install-emhcl.sh` reads `emhcl_version`.
 - A procedure uses only the seven Git operations. It never merges and never
@@ -26,41 +37,57 @@ Rules that keep the design uncoupled:
 
 ```sh
 sh tests/install-emhcl.test.sh     # installer, against a fake release, no network
-sh tests/structure.sh              # structure, vendored files, claude plugin validate
+sh tests/structure.sh              # structure, contract copies, skill names, example, claude plugin validate
+sh scripts/check-source-overlap.sh # text shared with the source skills of unknown license
 ```
 
 The behavior evals run real model calls on your account:
 
+Run `claude auth status` first. If the CLI reports that you are not logged
+in, authenticate before running the evals. The structure suite parses every
+eval prompt and grader without a model call. Parsing does not establish that
+a skill gives the expected answer.
+
 ```sh
 cd plugins/emhcl
 claude plugin eval . --trust-plugin --tag safety --tag language
+cd ../emhcl-skills
+claude plugin eval . --trust-plugin --tag method
 claude plugin eval . --trust-plugin --tag write --allow-tools Write
 ```
 
 The evals cannot load a Git connector, because a plugin eval loads only MCP
-servers that the plugin declares, and this plugin declares none. So the evals
-cover language tasks and safety rules. The manual test below covers the Git
-procedures.
+servers that the plugin declares, and `emhcl` declares none. So the evals
+cover language tasks, method skills, and safety rules. The manual test below
+covers the Git procedures. An eval of a plugin path loads only that plugin, so
+the evals of `event-modeling-hcl` and the method skills live in
+`emhcl-skills`.
 
-## Update the upstream skill
+## Update to a new emhcl release
 
 ```sh
-scripts/sync-upstream-skill.sh v0.17.0
+UPSTREAM_REPO=<local eventmodeling-hcl clone> scripts/sync-upstream.sh v0.17.0
 sh tests/structure.sh
 ```
 
-The script copies the skill and `examples/pet-clinic/model`, writes
-`compatibility.md`, and sets the pin of the example. Review the diff of the
-skill, then add a line to `CHANGELOG.md`.
+The script copies `examples/pet-clinic/model` at the tag, writes
+`compatibility.md` from the front matter of `event-modeling-hcl`, and sets the
+pin of the example. With `EMHCL=<binary>`, `--check` also compares the
+`spec_version` of the skill with the binary. Add a line to `CHANGELOG.md`.
 
 ## Release
 
+Do not release the new method content until the source-license question in
+`contract/CREDITS.md` is resolved. The text-overlap scan cannot grant rights
+to use source material.
+
 1. Run the tests and the manual test.
-2. Set `version` in `plugins/emhcl/.claude-plugin/plugin.json`, and move the
+2. Set `version` in the `plugin.json` of each changed plugin, and move the
    `Unreleased` entries of `CHANGELOG.md` under the new version.
 3. Update the plugin tag in the include examples of `README.md`.
-4. Run `claude plugin tag plugins/emhcl`, which makes the tag
-   `emhcl--v<version>`, and push it.
+4. Run `claude plugin tag plugins/emhcl` and `claude plugin tag
+   plugins/emhcl-skills`, which make the tags `emhcl--v<version>` and
+   `emhcl-skills--v<version>`, and push them.
 
 ## Manual test for each release
 
