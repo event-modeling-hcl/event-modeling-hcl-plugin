@@ -1,7 +1,7 @@
 {
   "name": "event-modeling-skills",
   "displayName": "Event Modeling Skills",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "Apache-2.0",
   "description": "Agent skills for Event Modeling: method skills that discover, structure, review, explain, and plan an event model, and the skills that write and validate Event Modeling HCL v0.8.0 (.em.hcl) with emhcl.",
   "author": {

@@ -1,6 +1,6 @@
 # Event Modeling Skills
 
-Release 0.1.0 contains 32 method skills and the `event-modeling-hcl` language skill.
+Release 0.2.0 contains 32 method skills and the `event-modeling-hcl` language skill.
 The method skills discover business facts, build a model, review evidence, and plan delivery slices.
 A delivery slice is a model part planned for implementation.
 

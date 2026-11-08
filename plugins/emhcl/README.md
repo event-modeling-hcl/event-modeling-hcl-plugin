@@ -1,6 +1,6 @@
 # Event Modeling HCL Plugin
 
-Release 0.1.0 provides team procedures for Event Modeling HCL files in GitLab or GitHub.
+Release 0.2.0 provides team procedures for Event Modeling HCL files in GitLab or GitHub.
 Diagnostics are reports of errors or warnings.
 Claude can show a model, explain diagnostics, propose changes, review proposals, and refresh a shared diagram.
 
@@ -113,4 +113,4 @@ The required skills package includes its own license and attribution notice.
 The [repository](https://github.com/event-modeling-hcl/event-modeling-hcl-plugin) contains shared setup instructions and CI templates.
 CI runs automated tasks when repository changes occur.
 Read [Set up a model repository](https://github.com/event-modeling-hcl/event-modeling-hcl-plugin#set-up-a-model-repository) for the GitLab and GitHub CI include blocks.
-Use the `v0.1.0` references from those blocks.
+Use the `v0.2.0` references from those blocks.

@@ -12,9 +12,9 @@
 # Include it at the repository release tag, and pass the same tag as plugin_ref:
 #
 #   include:
-#     - remote: https://raw.githubusercontent.com/event-modeling-hcl/event-modeling-hcl-plugin/v0.1.0/ci-templates/emhcl.gitlab-ci.yml
+#     - remote: https://raw.githubusercontent.com/event-modeling-hcl/event-modeling-hcl-plugin/v0.2.0/ci-templates/emhcl.gitlab-ci.yml
 #       inputs:
-#         plugin_ref: v0.1.0
+#         plugin_ref: v0.2.0
 #
 # Both plugins share this manually created repository tag. Future tags use v<version>.
 # Then set the merge method of the project to "Fast-forward merge" and turn on

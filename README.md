@@ -14,7 +14,7 @@ for ChatGPT and Codex:
   request in GitLab or GitHub, which a person reviews and merges. Claude Code
   installs `event-modeling-skills` as a dependency.
 
-Both plugins use Apache-2.0 and release together as v0.1.0.
+Both plugins use Apache-2.0 and release together as v0.2.0.
 They target specification v0.8.0 and emhcl v0.17.0 or newer.
 The method text uses original wording based on community ideas.
 Event Modeling comes from Adam Dymitruk at Adaptech Group.
@@ -84,7 +84,7 @@ If you installed the former `emhcl` plugin, uninstall it with
 If you installed the former `emhcl-skills` plugin, uninstall it with
 `claude plugin uninstall emhcl-skills@event-modeling-hcl`, then install
 `event-modeling-skills@event-modeling-hcl`. The source folder remains
-`plugins/emhcl-skills/`. Both plugins use the repository tag `v0.1.0`.
+`plugins/emhcl-skills/`. Both plugins use the repository tag `v0.2.0`.
 
 ## Install for local Codex
 
@@ -200,9 +200,9 @@ GitLab, in `.gitlab-ci.yml`:
 
 ```yaml
 include:
-  - remote: https://raw.githubusercontent.com/event-modeling-hcl/event-modeling-hcl-plugin/v0.1.0/ci-templates/emhcl.gitlab-ci.yml
+  - remote: https://raw.githubusercontent.com/event-modeling-hcl/event-modeling-hcl-plugin/v0.2.0/ci-templates/emhcl.gitlab-ci.yml
     inputs:
-      plugin_ref: v0.1.0
+      plugin_ref: v0.2.0
 ```
 
 Set the merge method to "Fast-forward merge" and turn on "Pipelines must
@@ -218,9 +218,9 @@ on:
     branches: [main]
 jobs:
   model:
-    uses: event-modeling-hcl/event-modeling-hcl-plugin/.github/workflows/emhcl-model.yml@v0.1.0
+    uses: event-modeling-hcl/event-modeling-hcl-plugin/.github/workflows/emhcl-model.yml@v0.2.0
     with:
-      plugin_ref: v0.1.0
+      plugin_ref: v0.2.0
     permissions:
       contents: read
       pages: write

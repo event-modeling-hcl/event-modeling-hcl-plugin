@@ -1,10 +1,13 @@
 # Changelog
 
 This file records releases of both plugins in this repository.
-Both plugins use version 0.1.0 for the first combined release.
-The maintainer creates the repository tag `v0.1.0` manually.
+Both plugins share one version and release together under one repository tag, `v<version>`.
+The maintainer creates each repository tag manually.
 
-## [Unreleased]
+## [0.2.0]
+
+This release adds a local Codex skills package and a portable ChatGPT and Codex plugin.
+Both Claude plugins use version 0.2.0, and the repository tag is `v0.2.0`.
 
 ### Added
 

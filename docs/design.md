@@ -1,6 +1,6 @@
 # Design of the emhcl plugin
 
-This document describes both Claude plugins in repository release v0.1.0. It uses Axiomatic Design to show which part controls each outcome. It records the implemented design and its release constraints. The Codex and ChatGPT packages use the same modeling sources. See [Platform packaging](#platform-packaging).
+This document describes both Claude plugins in repository release v0.2.0. It uses Axiomatic Design to show which part controls each outcome. It records the implemented design and its release constraints. The Codex and ChatGPT packages use the same modeling sources. See [Platform packaging](#platform-packaging).
 
 ## Platform packaging
 
@@ -311,7 +311,7 @@ If the folder already holds a binary that reports the pinned tag, the script ins
 
 ### DP2: language skill
 
-The skill `event-modeling-hcl` lives in the plugin `event-modeling-skills` in this repository. The plugin `event-modeling-hcl-plugin` declares it as a dependency. Only Claude Code installs that dependency automatically. In Claude chat and Cowork, install both plugins separately. Repository release v0.1.0 uses language skill 3.1.0 for specification v0.8.0 and emhcl v0.17.0 or newer. The language skill came from emhcl v0.17.0.
+The skill `event-modeling-hcl` lives in the plugin `event-modeling-skills` in this repository. The plugin `event-modeling-hcl-plugin` declares it as a dependency. Only Claude Code installs that dependency automatically. In Claude chat and Cowork, install both plugins separately. Repository release v0.2.0 uses language skill 3.1.0 for specification v0.8.0 and emhcl v0.17.0 or newer. The language skill came from emhcl v0.17.0.
 
 | Item | Contract |
 | --- | --- |
@@ -486,13 +486,13 @@ The design accepts the risks below. Each one has a stated effect and a control.
 | Risk | Effect | Control |
 | --- | --- | --- |
 | The GitHub connector cannot start a branch at a commit. | Between the second resolve-ref and `create_branch`, the default branch can move. Then the branch does not start at S. | em-change runs resolve-ref again before the commit, and restarts one time. CI validates the rebased result with fast-forward merges. |
-| On GitHub, `delete_file` adds one commit for each deleted file. | A change that deletes files has more than one commit. | None in 0.1.0. The content of the branch is still the validated copy. |
+| On GitHub, `delete_file` adds one commit for each deleted file. | A change that deletes files has more than one commit. | None in 0.2.0. The content of the branch is still the validated copy. |
 | GitHub pull requests get no labels. | `mr_labels` has no effect on GitHub. | Documented in `configuration.md`. |
-| The snapshot compares file sizes, not hashes. | A damaged file of the same size is not found. | None in 0.1.0. CI validates its own checkout, so the merge gate does not depend on the snapshot. |
+| The snapshot compares file sizes, not hashes. | A damaged file of the same size is not found. | None in 0.2.0. CI validates its own checkout, so the merge gate does not depend on the snapshot. |
 | A pin newer than `emhcl_max_tested`. | The skill and the validator can disagree. The cell FR2 and DP1 becomes unknown. | The range guard warns, and the report repeats the warning. |
 | GitLab older than 19.4 | `add_commit` has no `start_sha`, so em-change cannot write. | em-setup reads the tool schema and reports the problem. |
 | The diagram HTML is larger than 16 MiB. | No artifact. | The publisher names `canonical_url`. |
-| github.com is not available. | FR1 and FR5 fail together. | The `go install` fallback also needs the network. No control in 0.1.0. |
+| github.com is not available. | FR1 and FR5 fail together. | The `go install` fallback also needs the network. No control in 0.2.0. |
 
 ## Information content
 
@@ -530,16 +530,16 @@ A plugin eval loads only the MCP servers that the plugin declares, and this plug
 
 ## Release design decisions
 
-Repository release v0.1.0 uses these decisions:
+Repository release v0.2.0 uses these decisions:
 
 - The example pins emhcl v0.17.0 and supports specification v0.8.0. `emhcl_min` is 0.17.0.
 - The language skill lives in `event-modeling-skills`. `event-modeling-hcl-plugin` declares a dependency on it for Claude Code. Other apps need both plugins installed separately.
 - The range guard is a separate script, `check-compatibility.sh`. It reads the binary version, not `.emhcl.yml`, so DP1 remains the only reader of the pin.
 - em-change and em-review compare models with `emhcl diff`, not block text. A block that only moved to another file is not a change.
 - The connector bindings define the Git tools. em-setup also calls `get_mcp_server_version`. On GitLab before 19.5, read-mr uses `get_merge_request_diffs`.
-- The reusable GitHub workflow is part of v0.1.0.
+- The reusable GitHub workflow is part of v0.2.0.
 - em-view and em-validate run without `.emhcl.yml`, with a temporary pin.
-- Both plugins share one manually created repository tag, `v0.1.0`. Future repository releases use `v<version>`, not per-plugin tags.
+- Both plugins share one manually created repository tag, `v0.2.0`. Future repository releases use `v<version>`, not per-plugin tags.
 
 ## Paper-world discovery boundary
 

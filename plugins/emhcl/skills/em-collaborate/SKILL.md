@@ -17,7 +17,7 @@ compatibility: >-
   event-modeling-skills. Claude Code installs this dependency automatically.
   In chat and Cowork, install both plugins separately.
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 allowed-tools:
   - Bash(sh ${CLAUDE_SKILL_DIR}/scripts/install-emhcl.sh *)
   - Bash(sh ${CLAUDE_SKILL_DIR}/scripts/check-compatibility.sh *)

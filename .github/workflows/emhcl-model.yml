@@ -16,9 +16,9 @@
 #       branches: [main]
 #   jobs:
 #     model:
-#       uses: event-modeling-hcl/event-modeling-hcl-plugin/.github/workflows/emhcl-model.yml@v0.1.0
+#       uses: event-modeling-hcl/event-modeling-hcl-plugin/.github/workflows/emhcl-model.yml@v0.2.0
 #       with:
-#         plugin_ref: v0.1.0
+#         plugin_ref: v0.2.0
 #       permissions:
 #         contents: read
 #         pages: write

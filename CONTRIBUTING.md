@@ -100,15 +100,15 @@ pin of the example. With `EMHCL=<binary>`, `--check` also compares the
 
 ## Release
 
-Both plugins share the repository release `v0.1.0`. The release tag is not an emhcl binary version.
+Both plugins share the repository release `v0.2.0`. The release tag is not an emhcl binary version.
 Future repository releases use `v<version>` and release both plugins together.
 
 1. Run the automated tests above and record their commands and results.
 2. Complete the manual tests below and record each result separately.
-3. Set both plugin manifest versions to `0.1.0` and update the release entries in `CHANGELOG.md`.
-4. Use `v0.1.0` in the CI include examples and as `plugin_ref`.
+3. Set both plugin manifest versions to `0.2.0` and update the release entries in `CHANGELOG.md`.
+4. Use `v0.2.0` in the CI include examples and as `plugin_ref`.
 5. Prepare one archive per plugin and complete directory validation as described below.
-6. After reviewing the release files and results, manually create the single repository tag `v0.1.0`.
+6. After reviewing the release files and results, manually create the single repository tag `v0.2.0`.
 
 Do not create per-plugin tags. The maintainer creates the repository tag manually.
 These instructions do not create, commit, tag, or push a release.
@@ -168,9 +168,9 @@ Do not report a surface as tested when its result is `Not run`.
 
 Test Claude chat on claude.ai, Cowork, and Claude Code separately.
 For each app, repeat the collaboration steps with GitLab and GitHub.
-Use a disposable project with the pet-clinic example, `.emhcl.yml`, the CI template at `v0.1.0`, and fast-forward merges.
+Use a disposable project with the pet-clinic example, `.emhcl.yml`, the CI template at `v0.2.0`, and fast-forward merges.
 Before the tag exists, record the candidate commit used for CI.
-After the maintainer creates the tag, make sure that `v0.1.0` resolves to that commit.
+After the maintainer creates the tag, make sure that `v0.2.0` resolves to that commit.
 
 In Claude Code, load both folders with
 `claude --plugin-dir ./plugins/emhcl --plugin-dir ./plugins/emhcl-skills`.
