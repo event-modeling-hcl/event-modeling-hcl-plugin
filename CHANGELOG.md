@@ -1,98 +1,56 @@
 # Changelog
 
-This file records the releases of Event Modeling HCL Plugin for Claude. New
-release tags have the form `event-modeling-hcl-plugin--v<version>`, as
-`claude plugin tag` makes them. Existing `emhcl--v<version>` tags remain unchanged.
+This file records releases of both plugins in this repository.
+Both plugins use version 0.1.0 for the first combined release.
+The maintainer creates the repository tag `v0.1.0` manually.
 
 ## [Unreleased]
 
-### Changed
-
-- Rename the main plugin to `event-modeling-hcl-plugin` and update repository
-  URLs to `event-modeling-hcl/event-modeling-hcl-plugin`. Reinstall with
-  `claude plugin install event-modeling-hcl-plugin@event-modeling-hcl` after
-  uninstalling `emhcl@event-modeling-hcl`. Commands now use the namespace
-  `/event-modeling-hcl-plugin:`. The marketplace and CLI names remain unchanged.
-- Rename `emhcl-skills` to `event-modeling-skills` and update the main plugin's
-  dependency. Uninstall `emhcl-skills@event-modeling-hcl`, then install
-  `event-modeling-skills@event-modeling-hcl`. New skills release tags use
-  `event-modeling-skills--v<version>`; the source folder and existing tags remain
-  unchanged.
-- Paper-world discovery now includes questions about information, decisions,
-  handoffs, corrections, and delays in the event and workshop skills.
-- Shared discovery rules retain source evidence, actual system actors, and
-  command authority without restarting completed work or adding a paper model.
-- The 32 method skills now own business modeling without the broad
-  `event-modeling` skill. Use the orchestrator for complete models, the
-  facilitator for live sessions, or the writer for one model part.
-- K13 of the method contract now holds the complete shared edit policy.
-  Generated references preserve workflow locks, shared-consumer permissions,
-  and approval scope in installed plugins.
-- The language skill remains the authority for HCL syntax and tools.
-  The shared binding maps model parts to HCL without a second tool policy.
-- The coordinator routes explicit prerequisite requests to their part writers
-  and stops repeated failures or request cycles. It no longer duplicates the
-  HCL gate table.
-- A clean review closes only the reviews gate. Complete modeling runs continue
-  through slice status, ownership, and chapter summaries before reporting success.
-- Business and HCL acceptance cases now live in the executable plugin eval
-  suite. The cases retain business-only work, read-only review, and locked
-  shared-consumer behavior.
-
-### Removed
-
-- The executable `event-modeling` umbrella skill and its obsolete nested eval
-  layout. Its business guidance and permission policy remain in the shared
-  contract. See [the skill boundaries](docs/design.md#skill-boundaries-and-authorities).
-
-## [0.2.0]
-
-### Added
-
-- The plugin `emhcl-skills` 0.1.0, the home of the emhcl agent skills. It
-  holds the skills `event-modeling` 1.0.0 and `event-modeling-hcl` 3.1.0, moved
-  unchanged from emhcl v0.17.0 (specification v0.8.0), and 32 method skills
-  that write one part of the model each and name no other skill.
-- The method contract `contract/method.md` (K0 to K12), its HCL v0.8.0
-  binding `contract/hcl-binding.md` (H0 to H11), and .
-- `scripts/build-contract.sh`, which copies the contract sections that each
-  method skill lists into its `references/contract.md`, and checks them with
-  `--check`.
-- `scripts/check-source-overlap.sh`, which reports text that the method content
-  shares with the source skills of unknown license.
-- Three eval cases for each method skill. The eval `author-slice` moved to
-  `emhcl-skills`.
-
-### Changed
-
-- The plugin `emhcl` no longer vendors `event-modeling-hcl`. It depends on
-  `emhcl-skills`, which Claude Code installs with it.
-- The plugins support emhcl v0.17.0 and newer (specification v0.8.0), and
-  were tested with v0.17.0. The example pins emhcl 0.17.0.
-- `scripts/sync-upstream-skill.sh` became `scripts/sync-upstream.sh`. It copies
-  the example model at an emhcl tag and writes `compatibility.md` from the
-  front matter of `event-modeling-hcl`.
+Changes after v0.1.0 go here.
 
 ## [0.1.0]
 
+This release includes `event-modeling-hcl-plugin` and `event-modeling-skills`.
+Both plugins use Apache-2.0.
+The repository tag selects both plugins and the shared CI templates.
+
 ### Added
 
-- The plugin `emhcl` and the marketplace `event-modeling-hcl`.
-- The skill `em-collaborate` with the procedures em-setup, em-view,
-  em-validate, em-change, em-review, and em-sync, and one command for each.
-- The vendored skill `event-modeling-hcl` 2.5.0 from emhcl v0.16.0
-  (specification v0.7.0). The plugin supports emhcl v0.16.0 and newer, and
-  was tested with v0.16.0.
-- `install-emhcl.sh`, which installs the emhcl release that `.emhcl.yml` pins,
-  with a SHA-256 check and a `go install` fallback. Claude and CI both run it.
-- `check-compatibility.sh`, which compares an installed emhcl with the range of
-  the vendored skill.
-- The Git port: seven Git operations with bindings for the GitLab MCP server
-  and the GitHub MCP server.
-- The GitLab CI template `ci-templates/emhcl.gitlab-ci.yml` and the reusable
-  GitHub workflow `.github/workflows/emhcl-model.yml`, with the jobs
-  `emhcl-validate` and `pages`.
-- `scripts/sync-upstream-skill.sh`, which copies the upstream skill and the
-  pet-clinic folder model at an emhcl tag, and checks them with `--check`.
-- The example model repository `examples/pet-clinic`.
-- Script tests, structure tests, and a `claude plugin eval` suite.
+The release includes these components:
+
+- The `event-modeling-hcl` marketplace with both plugins.
+- The `em-collaborate` skill with six team procedures and their commands: `em-setup`, `em-view`, `em-validate`, `em-change`, `em-review`, and `em-sync`.
+- The `event-modeling-hcl` language skill 3.1.0 from emhcl v0.17.0, for specification v0.8.0.
+- The 32 method skills for discovery, model parts, review, feedback, and delivery planning.
+- The workflow orchestrator for complete models and the facilitator for live workshops.
+- The shared method contract, including the K13 edit policy, and its HCL binding.
+- The generated skill references that preserve workflow locks, shared-consumer permissions, and approval scope.
+- The installer for the pinned emhcl release, with a SHA-256 comparison and a Go installation fallback.
+- The compatibility script for the installed emhcl version and the language skill.
+- The seven Git operations with bindings for GitLab and GitHub connectors.
+- The diagram procedures for branch proposals and the default branch, with an HTML file fallback when artifact publication is unavailable.
+- The GitLab CI template and reusable GitHub workflow for validation and Pages publication.
+- The pet-clinic example with emhcl 0.17.0 pinned in `.emhcl.yml`.
+- The scripts that generate contract references and compare the example with the upstream release.
+- The installer tests, structure checks, and model-based evaluation cases.
+- A README and the Apache-2.0 license text inside each plugin folder.
+- The methodology attribution in the skills plugin's `NOTICE` file.
+
+### Changed
+
+If you used the earlier development names, update your installation:
+
+- Replace `emhcl@event-modeling-hcl` with `event-modeling-hcl-plugin@event-modeling-hcl`.
+- Replace `emhcl-skills@event-modeling-hcl` with `event-modeling-skills@event-modeling-hcl`.
+- Use `/event-modeling-hcl-plugin:` as the command namespace in Cowork and Claude Code.
+
+See [the installation instructions](README.md#install) for the uninstall commands.
+The marketplace remains `event-modeling-hcl`, and the command-line program remains `emhcl`.
+Claude Code installs the skills plugin as a dependency of the collaboration plugin.
+In chat and Cowork, install both plugins separately.
+
+### Removed
+
+The broad `event-modeling` skill is not part of this release.
+Use the orchestrator for complete models, the facilitator for workshops, or the specialist for one model part.
+Its shared permission rules remain in the method contract.

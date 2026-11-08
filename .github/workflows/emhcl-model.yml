@@ -8,7 +8,7 @@
 # This workflow names no emhcl version. Both jobs run install-emhcl.sh from the
 # same plugin tag, and that script installs the release that .emhcl.yml pins.
 #
-# Call it at a plugin tag, and pass the same tag as plugin_ref:
+# Call it at the repository release tag, and pass the same tag as plugin_ref:
 #
 #   on:
 #     pull_request:
@@ -16,14 +16,15 @@
 #       branches: [main]
 #   jobs:
 #     model:
-#       uses: event-modeling-hcl/event-modeling-hcl-plugin/.github/workflows/emhcl-model.yml@emhcl--v0.1.0
+#       uses: event-modeling-hcl/event-modeling-hcl-plugin/.github/workflows/emhcl-model.yml@v0.1.0
 #       with:
-#         plugin_ref: emhcl--v0.1.0
+#         plugin_ref: v0.1.0
 #       permissions:
 #         contents: read
 #         pages: write
 #         id-token: write
 #
+# Both plugins share this manually created repository tag. Future tags use v<version>.
 # Then require the status check "model / emhcl-validate" and linear history on
 # the default branch, and set GitHub Pages to deploy from GitHub Actions.
 name: emhcl model

@@ -40,7 +40,6 @@ Rules that keep the design uncoupled:
 ```sh
 sh tests/install-emhcl.test.sh     # installer, against a fake release, no network
 sh tests/structure.sh              # structure, contract copies, skill names, example, claude plugin validate
-sh scripts/check-source-overlap.sh # text shared with the source skills of unknown license
 ```
 
 The behavior evals run real model calls on your account:
@@ -85,32 +84,87 @@ pin of the example. With `EMHCL=<binary>`, `--check` also compares the
 
 ## Release
 
-Do not release the new method content until the source-license question in
- is resolved. The text-overlap scan cannot grant rights
-to use source material.
+Both plugins share the repository release `v0.1.0`. The release tag is not an emhcl binary version.
+Future repository releases use `v<version>` and release both plugins together.
 
-1. Run the tests and the manual test.
-2. Set `version` in the `plugin.json` of each changed plugin, and move the
-   `Unreleased` entries of `CHANGELOG.md` under the new version.
-3. Update the plugin tag in the include examples of `README.md`.
-4. Run `claude plugin tag plugins/emhcl` and `claude plugin tag
-   plugins/emhcl-skills`, which make the tags `event-modeling-hcl-plugin--v<version>` and
-   `event-modeling-skills--v<version>`, and push them.
+1. Run the automated tests above and record their commands and results.
+2. Complete the manual tests below and record each result separately.
+3. Set both plugin manifest versions to `0.1.0` and update the release entries in `CHANGELOG.md`.
+4. Use `v0.1.0` in the CI include examples and as `plugin_ref`.
+5. Prepare one archive per plugin and complete directory validation as described below.
+6. After reviewing the release files and results, manually create the single repository tag `v0.1.0`.
 
-## Manual test for each release
+Do not create per-plugin tags. The maintainer creates the repository tag manually.
+These instructions do not create, commit, tag, or push a release.
 
-Use a test project with the pet-clinic example, `.emhcl.yml`, the CI
-template at the new tag, and fast-forward merges. Run each step in Claude with
-the GitLab connector, then repeat with GitHub.
+### Plugin archives and directory validation
+
+Follow the [plugin build guide](https://claude.com/docs/plugins/build)
+and the [submission checklist](https://claude.com/docs/plugins/pre-submission-checklist).
+Package `plugins/emhcl` and `plugins/emhcl-skills` in separate ZIP archives.
+Each archive must contain `.claude-plugin/plugin.json` at its root or inside one top-level plugin folder.
+Do not upload an archive of the whole repository as one plugin.
+
+Run `claude plugin validate plugins/emhcl` and `claude plugin validate plugins/emhcl-skills`.
+These commands test file syntax and schemas, not all directory requirements or behavior.
+For each plugin folder, open the [developer portal](https://claude.ai/directory/manage).
+Select `Submit new`, then `Plugin bundle`, and enter the repository on the `Source` step.
+Select the individual plugin folder and select `Validate`.
+Record the commit, folder, result, blocking findings, warnings, and reviewer holds.
+Fix blocking findings before submission.
+After publishing fixes to the repository, select `Re-validate` on the same `Source` step.
+Submit each plugin separately, not the marketplace repository as one plugin.
+
+Make sure that each plugin contains a README with at least 40 words outside code blocks.
+It must describe usage and the data that the plugin sends, fetches, or runs.
+Each plugin also needs a license file or a manifest license field.
+All runtime files must remain inside the installed plugin folder.
+A successful portal report does not establish successful manual behavior tests or directory approval.
+
+## Manual tests for each release
+
+These are required manual tests, not recorded successes.
+Automated structure tests and model evals do not establish chat, Cowork, or Git connector behavior.
+Record `Pass`, `Fail`, or `Not run` for every app, host, and step.
+Include the date, tester, app version, plugin versions, commit, connector, evidence links, and any failure reason.
+Do not report a surface as tested when its result is `Not run`.
+
+Test Claude chat on claude.ai, Cowork, and Claude Code separately.
+For each app, repeat the collaboration steps with GitLab and GitHub.
+Use a disposable project with the pet-clinic example, `.emhcl.yml`, the CI template at `v0.1.0`, and fast-forward merges.
+Before the tag exists, record the candidate commit used for CI.
+After the maintainer creates the tag, make sure that `v0.1.0` resolves to that commit.
+
+In Claude Code, load both folders with
+`claude --plugin-dir ./plugins/emhcl --plugin-dir ./plugins/emhcl-skills`.
+Also test installation from the repository marketplace to exercise automatic dependency installation.
+Only Claude Code supports automatic plugin dependencies.
+In claude.ai, open `Customize > Plugins > Add > Upload plugin` and upload each plugin archive separately.
+Install both plugins separately in Cowork too.
+Open a chat or Cowork task and ask Claude which plugin skills it can use.
+Make sure that both plugins load, including the language and method skills.
+Commands load as skills in chat. Test their behavior with plain-language requests there.
+
+Collaboration requires shell execution, permission to download and run emhcl, network access, and a connected Git connector.
+Connect the GitLab or GitHub connector separately. These plugins do not bundle a connector.
+Record missing prerequisites as a blocked test, not a successful collaboration test.
+Where artifact publishing is unavailable, accept the generated HTML file and the stated reason instead of an artifact URL.
+For `em-sync`, record URL reuse as `Not run` on those surfaces and test the HTML fallback.
 
 | Step | Pass when |
 | --- | --- |
 | em-setup on a project without `.emhcl.yml` | It reports each check and opens one MR that adds `.emhcl.yml`. |
-| em-view on the default branch | The artifact title is `<project> <branch> @ <short SHA>`, and the SHA is the head of the branch. |
+| em-view on the default branch | The artifact or fallback HTML title is `<project> <branch> @ <short SHA>`. The SHA is the branch head. |
 | em-validate with `strict` | The lines equal a local `emhcl validate --profile strict` at that commit. |
-| em-change "add a slice where the owner cancels an appointment" | A new branch from the snapshot commit, one commit, and an MR with the artifact link. The MR is a Draft when `strict` fails. |
+| em-change "add a slice where the owner cancels an appointment" | A new branch starts from the snapshot commit. One commit and an MR contain the change. The MR includes the artifact link or explains its absence. It is a Draft when `strict` fails. |
 | em-change that cannot pass core validation | Nothing reaches Git, and the report names the diagnostics. |
-| em-review on the MR of the step above | One comment with the validation result, the changed slices, and a diagram link. |
-| em-sync twice | The second run republishes to the same URL. |
+| em-review on the appointment-cancellation MR | One comment reports validation and changed slices. It includes a diagram link or explains the HTML fallback. |
+| em-sync twice | Where publishing is supported, the second run republishes to the same URL. Otherwise, both runs return the HTML fallback and explain why no artifact exists. |
 | A request to merge the MR | Claude declines. |
 | CI after the merge | Pages shows the new commit in its title. |
+
+Test representative method and language requests in each app as well.
+Compare their output with a session without the plugins.
+Record whether Claude selects the responsible skill, preserves supplied business rules, and reports unknown decisions.
+For HCL requests, record the emhcl validation result separately from the model response.
+Do not treat skill discovery, archive upload, or portal validation as proof of correct modeling behavior.

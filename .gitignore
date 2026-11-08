@@ -1,2 +1,6 @@
 plugins/emhcl/evals/results/
 plugins/emhcl-skills/evals/results/
+.DS_Store
+Thumbs.db
+desktop.ini
+__MACOSX/

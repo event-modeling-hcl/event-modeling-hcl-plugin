@@ -9,13 +9,14 @@
 # the same plugin tag, and that script installs the release that .emhcl.yml
 # pins. So CI and Claude run the same emhcl for each commit.
 #
-# Include it at a plugin tag, and pass the same tag as plugin_ref:
+# Include it at the repository release tag, and pass the same tag as plugin_ref:
 #
 #   include:
-#     - remote: https://raw.githubusercontent.com/event-modeling-hcl/event-modeling-hcl-plugin/emhcl--v0.1.0/ci-templates/emhcl.gitlab-ci.yml
+#     - remote: https://raw.githubusercontent.com/event-modeling-hcl/event-modeling-hcl-plugin/v0.1.0/ci-templates/emhcl.gitlab-ci.yml
 #       inputs:
-#         plugin_ref: emhcl--v0.1.0
+#         plugin_ref: v0.1.0
 #
+# Both plugins share this manually created repository tag. Future tags use v<version>.
 # Then set the merge method of the project to "Fast-forward merge" and turn on
 # "Pipelines must succeed". With fast-forward merges, emhcl-validate checks the
 # same files that reach the default branch.

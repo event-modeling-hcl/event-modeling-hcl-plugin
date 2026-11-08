@@ -1,7 +1,7 @@
 {
   "name": "event-modeling-hcl-plugin",
   "displayName": "Event Modeling HCL Plugin",
-  "version": "0.2.0",
+  "version": "0.1.0",
   "description": "View, change, and review a team event model in .em.hcl files through Claude. Changes reach the default branch only through a merge request in GitLab or GitHub.",
   "author": {
     "name": "event-modeling-hcl",

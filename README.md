@@ -9,14 +9,16 @@ files:
   The language skill owns HCL syntax and emhcl tool operations.
 - `event-modeling-hcl-plugin` lets each person on a team view, change, and review the model
   through Claude. A change reaches the default branch only through a merge
-  request in GitLab or GitHub, which a person reviews and merges. It installs
-  `event-modeling-skills` as a dependency.
+  request in GitLab or GitHub, which a person reviews and merges. Claude Code
+  installs `event-modeling-skills` as a dependency.
 
-The plugins target specification v0.8.0 and emhcl v0.17.0 or newer.
-The `event-modeling-hcl-plugin` plugin and the upstream language content use
-Apache-2.0. Release of the restated method content awaits source-license review.
-See [contract/CREDITS.md](contract/CREDITS.md). A passing text-overlap scan
-does not establish license clearance.
+Both plugins use Apache-2.0 and release together as v0.1.0.
+They target specification v0.8.0 and emhcl v0.17.0 or newer.
+The method text uses original wording based on community ideas.
+Event Modeling comes from Adam Dymitruk at Adaptech Group.
+This project also credits [Martin Dilger](https://github.com/dilgerma).
+See [the Event Modeling introduction](https://eventmodeling.org/posts/what-is-event-modeling/)
+and [the packaged attribution](plugins/emhcl-skills/NOTICE).
 
 ## What it does
 
@@ -35,15 +37,31 @@ and never writes to the default branch.
 
 ## Install
 
-Add the marketplace and install the plugins:
+In Claude Code, add the marketplace and install the collaboration plugin:
 
 ```sh
 claude plugin marketplace add event-modeling-hcl/event-modeling-hcl-plugin
 claude plugin install event-modeling-hcl-plugin@event-modeling-hcl
 ```
 
-The second command also installs `event-modeling-skills`. To use only the skills,
+Claude Code also installs `event-modeling-skills`. To use only the skills,
 without the Git procedures, install `event-modeling-skills@event-modeling-hcl`.
+
+In chat and Cowork, install both plugins separately from Customize > Plugins.
+Add this repository through Add > Add marketplace, or upload each plugin folder
+as its own ZIP through Add > Upload plugin.
+Each ZIP must contain `.claude-plugin/plugin.json` at its root or inside one top-level folder.
+Do not upload a ZIP of the whole marketplace repository.
+
+Skills load in chat, Cowork, and Claude Code.
+Business modeling in plain words needs no shell or Git connector.
+The collaboration procedures also need a shell, network access, and a Git connector.
+The shell must run the pinned emhcl program and its installer.
+If those tools are unavailable, the procedure stops rather than claiming a result.
+Artifact publication depends on the app.
+If publication is unavailable, the procedure returns the generated HTML file instead of a diagram link.
+Installation alone does not prove that a procedure works.
+See [the release test procedure](CONTRIBUTING.md#manual-tests-for-each-release) for the required app and Git host runs.
 
 If you installed the former `emhcl` plugin, uninstall it with
 `claude plugin uninstall emhcl@event-modeling-hcl`, then install
@@ -53,7 +71,7 @@ If you installed the former `emhcl` plugin, uninstall it with
 If you installed the former `emhcl-skills` plugin, uninstall it with
 `claude plugin uninstall emhcl-skills@event-modeling-hcl`, then install
 `event-modeling-skills@event-modeling-hcl`. The source folder remains
-`plugins/emhcl-skills/`; existing release tags remain unchanged.
+`plugins/emhcl-skills/`. Both plugins use the repository tag `v0.1.0`.
 
 ## The method skills
 
@@ -114,9 +132,9 @@ GitLab, in `.gitlab-ci.yml`:
 
 ```yaml
 include:
-  - remote: https://raw.githubusercontent.com/event-modeling-hcl/event-modeling-hcl-plugin/emhcl--v0.2.0/ci-templates/emhcl.gitlab-ci.yml
+  - remote: https://raw.githubusercontent.com/event-modeling-hcl/event-modeling-hcl-plugin/v0.1.0/ci-templates/emhcl.gitlab-ci.yml
     inputs:
-      plugin_ref: emhcl--v0.2.0
+      plugin_ref: v0.1.0
 ```
 
 Set the merge method to "Fast-forward merge" and turn on "Pipelines must
@@ -132,9 +150,9 @@ on:
     branches: [main]
 jobs:
   model:
-    uses: event-modeling-hcl/event-modeling-hcl-plugin/.github/workflows/emhcl-model.yml@emhcl--v0.2.0
+    uses: event-modeling-hcl/event-modeling-hcl-plugin/.github/workflows/emhcl-model.yml@v0.1.0
     with:
-      plugin_ref: emhcl--v0.2.0
+      plugin_ref: v0.1.0
     permissions:
       contents: read
       pages: write
@@ -150,8 +168,7 @@ The CI templates name no emhcl version. They run the same
 
 ## How it is built
 
-The design follows the plan in
-[emhcl Plugin for Claude — Open-Source Plan.md](emhcl%20Plugin%20for%20Claude%20%E2%80%94%20Open-Source%20Plan.md).
+[docs/design.md](docs/design.md) describes the design and the remaining risks.
 Five design parameters each control one requirement:
 
 | Part | File | Controls |
@@ -200,8 +217,11 @@ event-modeling-hcl-plugin/
   republishes it to the same URL.
 - em-change and em-review publish one proposal artifact for each MR.
 
-Each title names the branch and the short commit SHA. A new artifact is
-private; share it from the Share button of the artifact page.
+Each title names the branch and the short commit SHA.
+If the app can publish artifacts, a new artifact is private.
+Use the Share button on its page to grant access.
+If the app cannot publish artifacts, use the returned HTML file.
+That file has no shared artifact URL.
 
 ## Contributing
 

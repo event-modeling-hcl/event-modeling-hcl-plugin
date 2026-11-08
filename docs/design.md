@@ -1,6 +1,6 @@
 # Design of the emhcl plugin
 
-This document describes the design of the emhcl plugin for Claude, version 0.1.0, as the repository builds it. It uses Axiomatic Design to show which part controls which outcome. The plan in `emhcl Plugin for Claude — Open-Source Plan.md` gives the reasons for the design. This document records the result and the places where the result differs from the plan.
+This document describes both Claude plugins in repository release v0.1.0. It uses Axiomatic Design to show which part controls each outcome. It records the implemented design and its release constraints.
 
 ## Terms
 
@@ -15,7 +15,7 @@ This document uses these terms:
 - Slice: one workflow in the model, for example a `state_change` block.
 - Profile: how strictly `emhcl validate` treats modeling judgment. The values are `workshop`, `valid`, and `strict`.
 - Core error: an error that `emhcl validate` reports in every profile.
-- Artifact: a web page that Claude publishes on claude.ai.
+- Artifact: a web page that Claude publishes when the surface supports publishing.
 - Procedure: the instructions in the skill for one command.
 
 The design terms come from Kim, Suh, and Kim, "Design of Software Systems Based on Axiomatic Design" (1991):
@@ -29,11 +29,12 @@ The design terms come from Kim, Suh, and Kim, "Design of Software Systems Based 
 
 ## System boundary
 
-The plugin is text and shell scripts. It has no server and no connector of its own. At run time, it depends on five external parts:
+The plugins contain text and shell scripts. They have no server and no connector of their own. Collaboration needs these external parts:
 
-- The Git connector that the team already has: the GitLab MCP server or the GitHub MCP server.
-- The `emhcl` binary, which a script downloads from GitHub Releases.
-- The artifact feature of the Claude surface.
+- A connected GitLab or GitHub connector.
+- Shell execution and permission to download and run the `emhcl` binary from GitHub Releases.
+- Network access to GitHub and the Git host.
+- Artifact publishing, or the generated HTML file when the surface cannot publish.
 - The CI system of the model repository, which runs the plugin CI templates.
 - The Git host, where a person reviews and merges each MR.
 
@@ -74,8 +75,8 @@ The needs describe what a person on the team wants. The constraints limit each a
 | C4 | No company-specific content in the plugin. Team rules live in `.emhcl.yml`. |
 | C5 | Changes reach the default branch only through an MR. |
 | C6 | GitLab Pages is the canonical diagram of the default branch. |
-| C7 | A shared Claude artifact mirrors the default branch. |
-| C8 | The plugin works in Claude chat, Cowork, and Claude Code. |
+| C7 | A shared Claude artifact mirrors the default branch where publishing is available. Other surfaces return the generated HTML file. |
+| C8 | Claude chat, Cowork, and Claude Code need separate manual tests. Collaboration requires shell execution, download permissions, network access, and a Git connector. |
 
 ## Requirements and design parameters
 
@@ -86,7 +87,7 @@ The top-level requirement, FR0, is this: a team views, changes, and reviews one 
 | FR1 | Claude and CI run the same emhcl release for each commit. | In Claude and in CI, `emhcl version` names the `emhcl_version` value of `.emhcl.yml`. | DP1, validator pin | `scripts/install-emhcl.sh`, key `emhcl_version` | N4 |
 | FR2 | Claude writes and explains `.em.hcl` text in the language version that the plugin supports. | Each model that Claude writes in the eval suite has no core errors. | DP2, language skill | `plugins/emhcl-skills/skills/event-modeling-hcl/`, `references/compatibility.md`, `scripts/check-compatibility.sh` | N1, N2 |
 | FR3 | Claude reads an exact snapshot at a commit. Claude writes only a new branch, an MR, or one MR comment. | Each snapshot file has the size that the connector reports. No procedure writes to the default branch or merges. | DP3, Git port | `references/git-operations.md`, shared step S3 | N1, N2, N3 |
-| FR4 | People see a snapshot as a diagram in Claude, labeled with its branch and commit. | The artifact holds the unchanged `emhcl diagram` HTML, with the branch and short SHA in its title. | DP4, diagram publisher | `references/diagrams.md` | N1, N3, N5 |
+| FR4 | People see a snapshot diagram labeled with its branch and commit. | The artifact or HTML fallback holds the unchanged `emhcl diagram` HTML, with the branch and short SHA in its title. | DP4, diagram publisher | `references/diagrams.md` | N1, N3, N5 |
 | FR5 | CI blocks each MR whose model fails `merge_profile`. Pages shows the default branch after each merge. | An MR with `EM404` under `strict` cannot merge. After a merge, the Pages title names the new commit. | DP5, CI templates and fast-forward merges | `ci-templates/emhcl.gitlab-ci.yml`, `.github/workflows/emhcl-model.yml` | N4, N5 |
 
 The skill files are under `plugins/emhcl/skills/em-collaborate/` unless the path names another folder. N6 has no FR of its own. C4 keeps the plugin generic, and em-setup composes the five DPs for a new team.
@@ -147,7 +148,7 @@ If the folder already holds a binary that reports the pinned tag, the script ins
 
 ### DP2: language skill
 
-The skill `event-modeling-hcl` lives in the plugin `event-modeling-skills` of this repository, the home of the emhcl agent skills. The plugin `event-modeling-hcl-plugin` declares `event-modeling-skills` as a dependency, so Claude Code installs both. Version 0.2.0 uses skill 3.1.0, for specification v0.8.0 and emhcl v0.17.0 or newer. The skill moved there unchanged from emhcl v0.17.0.
+The skill `event-modeling-hcl` lives in the plugin `event-modeling-skills` in this repository. The plugin `event-modeling-hcl-plugin` declares it as a dependency. Only Claude Code installs that dependency automatically. In Claude chat and Cowork, install both plugins separately. Repository release v0.1.0 uses language skill 3.1.0 for specification v0.8.0 and emhcl v0.17.0 or newer. The language skill came from emhcl v0.17.0.
 
 | Item | Contract |
 | --- | --- |
@@ -244,7 +245,7 @@ No procedure changes a key as a side effect. If the file is missing, em-setup pr
 
 ## Composition of the commands
 
-A command adds no mechanism of its own. Each file in `commands/` is one line that names a procedure of the skill `em-collaborate`. Claude chat loads a command only as a skill, so all logic lives in the skill, and each surface gets the same behavior.
+A command adds no mechanism of its own. Each file in `commands/` names a procedure of the skill `em-collaborate`. Claude chat loads commands as skills. The procedures define intended behavior across apps, subject to tool availability and separate manual tests.
 
 The skill defines six shared steps. The procedures run them in this order:
 
@@ -364,18 +365,18 @@ The tests in `tests/` and the eval suite in `plugins/emhcl/evals/` test the clai
 
 A plugin eval loads only the MCP servers that the plugin declares, and this plugin declares none. So no eval covers DP3. The manual test list in `CONTRIBUTING.md` covers the Git procedures on GitLab and GitHub for each release.
 
-## Differences from the plan
+## Release design decisions
 
-The repository differs from the plan in these points:
+Repository release v0.1.0 uses these decisions:
 
-- The plan names emhcl v0.13.0. Version 0.2.0 pins emhcl v0.17.0 and supports specification v0.8.0. `emhcl_min` is 0.17.0.
-- The plan vendors the language skill. Since 0.2.0, the skill lives in the skills plugin, now named `event-modeling-skills`, and `event-modeling-hcl-plugin` depends on it.
-- The range guard is a separate script, `check-compatibility.sh`. It reads the version of the binary, not `.emhcl.yml`, so DP1 stays the only reader of the pin.
-- em-change and em-review compare models with `emhcl diff`, not with the block text. A block that only moved to another file is not a change.
-- The bindings name more tools than the plan table: `get_project`, `search_repositories`, and `delete_file`. em-setup also calls `get_mcp_server_version`. On GitLab before 19.5, read-mr uses `get_merge_request_diffs`.
-- The reusable GitHub workflow is part of 0.1.0. The plan put it in milestone M4.
+- The example pins emhcl v0.17.0 and supports specification v0.8.0. `emhcl_min` is 0.17.0.
+- The language skill lives in `event-modeling-skills`. `event-modeling-hcl-plugin` declares a dependency on it for Claude Code. Other apps need both plugins installed separately.
+- The range guard is a separate script, `check-compatibility.sh`. It reads the binary version, not `.emhcl.yml`, so DP1 remains the only reader of the pin.
+- em-change and em-review compare models with `emhcl diff`, not block text. A block that only moved to another file is not a change.
+- The connector bindings define the Git tools. em-setup also calls `get_mcp_server_version`. On GitLab before 19.5, read-mr uses `get_merge_request_diffs`.
+- The reusable GitHub workflow is part of v0.1.0.
 - em-view and em-validate run without `.emhcl.yml`, with a temporary pin.
-- A release tag has the form `event-modeling-hcl-plugin--v<version>`, as `claude plugin tag` makes it. Existing `emhcl--v<version>` tags remain unchanged.
+- Both plugins share one manually created repository tag, `v0.1.0`. Future repository releases use `v<version>`, not per-plugin tags.
 
 ## Paper-world discovery boundary
 

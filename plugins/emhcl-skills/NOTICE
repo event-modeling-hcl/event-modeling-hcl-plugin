@@ -1,0 +1,24 @@
+Event Modeling Skills
+
+The method skills and shared method rules use original wording by this
+project's author. They express community ideas. The author confirms that
+this text is not copied or adapted from third-party method text. This
+project distributes that original work under the Apache License, Version 2.0.
+
+Event Modeling is a methodology by Adam Dymitruk at Adaptech Group.
+https://eventmodeling.org/
+https://eventmodeling.org/posts/what-is-event-modeling/
+
+These links credit the methodology. They do not claim that the website or
+its articles use the Apache License.
+
+This project also credits Martin Dilger.
+https://github.com/dilgerma
+
+The language skill includes upstream language content from emhcl v0.17.0,
+which uses the Apache License, Version 2.0.
+https://github.com/event-modeling-hcl/eventmodeling-hcl/tree/v0.17.0
+https://github.com/event-modeling-hcl/eventmodeling-hcl/blob/v0.17.0/LICENSE
+
+This project is not endorsed by Adam Dymitruk, Adaptech Group, or the
+Event Modeling website. These notices do not change the license terms.

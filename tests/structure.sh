@@ -40,7 +40,7 @@ pass "front matter checked for each skill and command"
 # FR1 and DP5: no CI template names an emhcl version.
 # Plugin release tags in usage comments are not emhcl CLI versions.
 templates="$root/ci-templates/emhcl.gitlab-ci.yml $root/.github/workflows/emhcl-model.yml"
-if grep -nE 'emhcl_version|[0-9]+\.[0-9]+\.[0-9]+|eventmodeling-hcl/releases|cmd/emhcl@' $templates | grep -vE '(emhcl|event-modeling-hcl-plugin)--v'; then
+if grep -nE 'emhcl_version|[0-9]+\.[0-9]+\.[0-9]+|eventmodeling-hcl/releases|cmd/emhcl@' $templates | grep -vE 'event-modeling-hcl-plugin/(\.github/workflows/emhcl-model\.yml@)?v[0-9]+\.[0-9]+\.[0-9]+(/ci-templates/emhcl\.gitlab-ci\.yml|$)|plugin_ref: v[0-9]+\.[0-9]+\.[0-9]+$'; then
 	fail "a CI template names an emhcl version"
 else pass "no CI template names an emhcl version"; fi
 

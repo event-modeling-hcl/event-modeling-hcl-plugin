@@ -14,9 +14,10 @@ compatibility: >-
   Needs the GitLab MCP server (GitLab 19.4 or later) or the GitHub MCP server,
   a shell with curl or go, and the emhcl release that the model repository
   pins in .emhcl.yml. Needs the event-modeling-hcl skill of the plugin
-  event-modeling-skills, which the plugin event-modeling-hcl-plugin installs as a dependency.
+  event-modeling-skills. Claude Code installs this dependency automatically.
+  In chat and Cowork, install both plugins separately.
 metadata:
-  version: "0.2.0"
+  version: "0.1.0"
 allowed-tools:
   - Bash(sh ${CLAUDE_SKILL_DIR}/scripts/install-emhcl.sh *)
   - Bash(sh ${CLAUDE_SKILL_DIR}/scripts/check-compatibility.sh *)
@@ -30,7 +31,8 @@ reaches the default branch only through a merge request (MR) that a person
 reviews and merges in GitLab or GitHub.
 
 The language itself belongs to the skill `event-modeling-hcl` of the plugin
-`event-modeling-skills`. The plugin `event-modeling-hcl-plugin` installs `event-modeling-skills` as a dependency.
+`event-modeling-skills`. Claude Code installs that plugin as a dependency.
+In chat and Cowork, install both plugins before running these procedures.
 Load `event-modeling-hcl` before you write, repair, or explain `.em.hcl` text.
 This skill adds only the team procedures.
 
