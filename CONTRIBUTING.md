@@ -15,6 +15,8 @@ agent skills. Put each change in the part that owns it:
 | How diagrams become artifacts | `plugins/emhcl/skills/em-collaborate/references/diagrams.md` |
 | A procedure | `plugins/emhcl/skills/em-collaborate/references/procedures/` |
 | CI | `ci-templates/` and `.github/workflows/emhcl-model.yml` |
+| Codex packaging, paths, or installation | `scripts/build-codex.py`, the Codex installer, and `platforms/codex/` |
+| ChatGPT and Codex plugin packaging or marketplace discovery | `scripts/build-chatgpt.py`, `.agents/plugins/marketplace.json`, and `platforms/chatgpt/` |
 
 Rules that keep the design uncoupled:
 
@@ -34,10 +36,18 @@ Rules that keep the design uncoupled:
 - A procedure uses only the seven Git operations. It never merges and never
   writes to the default branch.
 - A command stays a one-line entry point to a procedure.
+- Keep method and language changes in the shared sources, not platform
+  adapters. Build platform outputs into `dist/`; do not commit generated
+  copies or treat an installed package as the source of truth.
+- Preserve `LICENSE` and the methodology attribution in
+  `plugins/emhcl-skills/NOTICE` in generated distributions.
 
 ## Tests
 
 ```sh
+python3 -m unittest discover -s tests -p 'test_*_package.py' -v
+python3 scripts/build-codex.py
+python3 scripts/build-chatgpt.py
 sh tests/install-emhcl.test.sh     # installer, against a fake release, no network
 sh tests/structure.sh              # structure, contract copies, skill names, example, claude plugin validate
 ```
@@ -69,6 +79,12 @@ cover language tasks, method skills, and safety rules. The manual test below
 covers the Git procedures. An eval of a plugin path loads only that plugin, so
 the evals of `event-modeling-hcl` and the method skills live in
 `event-modeling-skills`.
+
+Platform packaging tests run without a model account. They exercise generated
+files and installation safety, not response quality. For Codex and ChatGPT
+runtime checks, use the acceptance scenarios in `platforms/codex/` and
+`platforms/chatgpt/`. Run connector-backed scenarios only in a test repository.
+Building a package does not authorize a remote write.
 
 ## Update to a new emhcl release
 
@@ -120,6 +136,27 @@ It must describe usage and the data that the plugin sends, fetches, or runs.
 Each plugin also needs a license file or a manifest license field.
 All runtime files must remain inside the installed plugin folder.
 A successful portal report does not establish successful manual behavior tests or directory approval.
+
+### OpenAI plugin package
+
+The OpenAI plugin uses the portable format in the
+[OpenAI plugin build guide](https://developers.openai.com/plugins/build/plugins).
+Build `dist/chatgpt` with `python3 scripts/build-chatgpt.py`.
+Keep its root `plugin.json`, `skills/`, `LICENSE`, and `NOTICE` together.
+The repository marketplace at `.agents/plugins/marketplace.json` points to that output.
+
+Use [the ChatGPT setup guide](platforms/chatgpt/README.md) for local installation and manual tests.
+Do not install the standalone Codex skills alongside the plugin in the same session.
+They contain the same skills.
+Record local installation, ChatGPT discovery, and authenticated procedure results separately.
+Do not report a desktop test as a successful ChatGPT web test.
+
+Public directory submission is separate from local installation.
+Follow the [OpenAI submission guide](https://developers.openai.com/plugins/deploy/submission)
+after the manual checks pass.
+The maintainer must supply the verified publishing identity and complete the portal review.
+Do not publish credentials or claim directory approval from a successful local build.
+
 
 ## Manual tests for each release
 

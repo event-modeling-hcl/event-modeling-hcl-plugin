@@ -6,7 +6,27 @@ The maintainer creates the repository tag `v0.1.0` manually.
 
 ## [Unreleased]
 
-Changes after v0.1.0 go here.
+### Added
+
+- A portable ChatGPT and Codex plugin with all 34 skills, built with `python3 scripts/build-chatgpt.py`.
+- A repository marketplace for local plugin installation and a guide for desktop acceptance tests.
+- A standalone Codex skills package with a guarded project or user installer.
+- Package tests for detached resources, source references, deterministic builds, and destination safety.
+- A platform design with traced requirements, influence analysis, module contracts, and explicit runtime limits.
+- Plugins Directory listing text in `extensions.com.openai.interface` of the plugin manifest: name, descriptions, category, and three starter prompts.
+- A statement in each plugin skill that explicit user scope takes priority over optional skill guidance. Fixed permission, validation, and merge rules still apply.
+
+### Fixed
+
+- Both package builders use the current methodology `NOTICE` instead of the removed `contract/CREDITS.md`.
+- The Codex adapter matches the current collaboration skill and preserves its validation and permission rules.
+- Codex CLI 0.162.1 shortened an explicitly invoked `SKILL.md` above about 8,000 bytes. Three plugin skills and two standalone Codex skills lost their last sections. In the plugin skill `em-collaborate`, the lost text included the validation steps, the report rules, and the execution boundary. Both builders now keep each `SKILL.md` at 8,000 bytes or less. They move the last complete sections to a linked `instructions-continued.md`.
+- The plugin guide and the runtime preflight named `$em-collaborate` for Codex. Codex selects a plugin skill only with its plugin prefix, so they now name `$event-modeling-hcl-plugin:em-collaborate`.
+- Resolved merge conflicts without restoring obsolete release tags or the old license-review caveat.
+
+### Removed
+
+- The unfinished Custom GPT upload bundle. Use the portable plugin instead of uploading knowledge files.
 
 ## [0.1.0]
 
@@ -44,7 +64,7 @@ If you used the earlier development names, update your installation:
 - Replace `emhcl-skills@event-modeling-hcl` with `event-modeling-skills@event-modeling-hcl`.
 - Use `/event-modeling-hcl-plugin:` as the command namespace in Cowork and Claude Code.
 
-See [the installation instructions](README.md#install) for the uninstall commands.
+See [the installation instructions](README.md#install-for-claude) for the uninstall commands.
 The marketplace remains `event-modeling-hcl`, and the command-line program remains `emhcl`.
 Claude Code installs the skills plugin as a dependency of the collaboration plugin.
 In chat and Cowork, install both plugins separately.

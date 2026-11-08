@@ -1,8 +1,10 @@
-# Event Modeling HCL Plugin for Claude
+# Event Modeling HCL for Claude, Codex, and ChatGPT
 
-Two open-source Claude plugins for teams that keep an event model in
+Model business workflows and maintain
 [Event Modeling HCL](https://github.com/event-modeling-hcl/spec) (`.em.hcl`)
-files:
+files with shared method and language guidance. This repository provides two
+Claude plugins, a local Codex skills distribution, and a portable plugin
+for ChatGPT and Codex:
 
 - `event-modeling-skills` holds 32 method skills and the `event-modeling-hcl`
   language skill. The method skills discover, review, and plan business models.
@@ -20,6 +22,17 @@ This project also credits [Martin Dilger](https://github.com/dilgerma).
 See [the Event Modeling introduction](https://eventmodeling.org/posts/what-is-event-modeling/)
 and [the packaged attribution](plugins/emhcl-skills/NOTICE).
 
+| Surface | Modeling guidance | Repository collaboration | Diagrams |
+| --- | --- | --- | --- |
+| Claude plugins | 32 method skills and the HCL language skill | Six procedures through GitLab or GitHub MCP | Artifacts when supported; otherwise unchanged HTML |
+| Local Codex CLI and IDE | The same 33 modeling skills | The same six procedures through configured Git MCP tools and a shell | Unchanged local HTML; no hosted team-artifact service |
+| ChatGPT and Codex plugin | The same 33 modeling skills | The same six procedures when a shell and configured Git MCP tools are available | Unchanged local HTML; no hosted team-artifact service |
+
+See [Codex skills setup](platforms/codex/README.md) and
+[ChatGPT plugin setup](platforms/chatgpt/README.md).
+The OpenAI plugin includes all 34 skills in one package.
+Installation does not grant repository access or provide a shell.
+
 ## What it does
 
 | Command | What it does | Writes to Git |
@@ -35,7 +48,7 @@ In Cowork and Claude Code, run a command as `/event-modeling-hcl-plugin:em-chang
 ask in plain words; Claude uses the matching procedure. The plugin never merges
 and never writes to the default branch.
 
-## Install
+## Install for Claude
 
 In Claude Code, add the marketplace and install the collaboration plugin:
 
@@ -72,6 +85,61 @@ If you installed the former `emhcl-skills` plugin, uninstall it with
 `claude plugin uninstall emhcl-skills@event-modeling-hcl`, then install
 `event-modeling-skills@event-modeling-hcl`. The source folder remains
 `plugins/emhcl-skills/`. Both plugins use the repository tag `v0.1.0`.
+
+## Install for local Codex
+
+You need Python 3 to build and install the package. From this checkout, run:
+
+```sh
+python3 scripts/build-codex.py
+python3 scripts/install-codex.py --source dist/codex --project /path/to/model-repo
+```
+
+Replace `/path/to/model-repo` with your model repository. The installer places
+the 34 skills in its `.agents/skills/` directory. Use `--user` instead of
+`--project` to install into `~/.agents/skills/` for all projects.
+It refuses existing skill conflicts; managed upgrades require `--update`.
+Restart Codex after installation.
+
+Ask `$em-collaborate em-setup for OWNER/REPOSITORY`, or request `em-view`,
+`em-validate`, `em-change`, `em-review`, or `em-sync` in plain words.
+Configure the GitHub or GitLab MCP tools in Codex before collaboration.
+The package does not install credentials or a connector. Without those tools,
+you can still use the method and language skills for local modeling.
+
+See [Codex setup and acceptance checks](platforms/codex/README.md) for
+standalone installation, upgrades, and diagram-delivery limits.
+
+## Install the ChatGPT and Codex plugin
+
+From this checkout, build the plugin and register the repository marketplace:
+
+```sh
+python3 scripts/build-chatgpt.py
+codex plugin marketplace add .
+```
+
+The builder writes a portable `plugin.json` and `skills/` under `dist/chatgpt`.
+Use an absent or empty output directory. The builder never replaces an existing package.
+The repository marketplace points to that default output.
+Restart the ChatGPT desktop app, select Event Modeling HCL in the Plugins Directory,
+and install `event-modeling-hcl-plugin`.
+Start a new conversation and ask it to model your business workflow.
+
+You can also install it in Codex:
+
+```sh
+codex plugin add event-modeling-hcl-plugin@event-modeling-hcl
+```
+
+In Codex, start a new session and invoke a plugin skill with its plugin prefix,
+for example `$event-modeling-hcl-plugin:em-collaborate em-view for OWNER/REPOSITORY`.
+Use either the plugin or the standalone Codex skills, not both in the same session.
+The plugin bundles no Git server, credentials, or hosted artifact service.
+Repository procedures require a shell, network access, and configured Git MCP tools.
+Without those tools, the procedures stop. Business modeling still needs no repository.
+See [the setup guide](platforms/chatgpt/README.md) for rebuilds and manual acceptance scenarios.
+The package follows the [OpenAI plugin build guide](https://developers.openai.com/plugins/build/plugins).
 
 ## The method skills
 
@@ -187,6 +255,7 @@ residual risks.
 ```
 event-modeling-hcl-plugin/
 ├── .claude-plugin/marketplace.json
+├── .agents/plugins/marketplace.json       # OpenAI marketplace, selects dist/chatgpt
 ├── plugins/emhcl/
 │   ├── .claude-plugin/plugin.json         # depends on event-modeling-skills
 │   ├── skills/em-collaborate/
@@ -206,6 +275,10 @@ event-modeling-hcl-plugin/
 ├── .github/workflows/emhcl-model.yml      # DP5 for GitHub Actions
 ├── scripts/build-contract.sh              # publishes installable shared authorities
 ├── scripts/sync-upstream.sh               # copies the example at a tag, writes compatibility.md
+├── scripts/build-codex.py                 # standalone local Codex skills
+├── scripts/install-codex.py               # guarded installation of those skills
+├── scripts/build-chatgpt.py               # portable plugin for ChatGPT and Codex
+├── platforms/                            # setup and manual acceptance scenarios
 ├── examples/pet-clinic/                   # upstream folder model, plus .emhcl.yml
 └── tests/                                 # script and structure tests
 ```

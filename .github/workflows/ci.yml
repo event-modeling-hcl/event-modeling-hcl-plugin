@@ -28,6 +28,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Platform packaging and installation tests
+        run: python3 -m unittest discover -s tests -p 'test_*_package.py' -v
+      - name: Build standalone platform packages
+        run: |
+          python3 scripts/build-codex.py
+          python3 scripts/build-chatgpt.py
       - name: install-emhcl.sh against a fake release
         run: sh tests/install-emhcl.test.sh
       - name: install-emhcl.sh against the pinned release of the example

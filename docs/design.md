@@ -1,6 +1,169 @@
 # Design of the emhcl plugin
 
-This document describes both Claude plugins in repository release v0.1.0. It uses Axiomatic Design to show which part controls each outcome. It records the implemented design and its release constraints.
+This document describes both Claude plugins in repository release v0.1.0. It uses Axiomatic Design to show which part controls each outcome. It records the implemented design and its release constraints. The Codex and ChatGPT packages use the same modeling sources. See [Platform packaging](#platform-packaging).
+
+## Platform packaging
+
+The packages share the method rules, language rules, and collaboration procedures.
+Claude installs the two source plugins.
+Codex can install a generated local skills package.
+ChatGPT and Codex can install a generated portable plugin through a local marketplace.
+No package includes a hosted service, Git connector, or credentials.
+
+### Scope and evidence
+
+The package boundary starts at the canonical sources and ends at the installed skill resources.
+People who maintain the package need safe builds.
+People who use it need the same modeling rules and truthful reports of tool results.
+The host owns skill loading, tool access, permissions, and authentication.
+
+The unfinished ChatGPT builder produced Custom GPT knowledge uploads.
+It had no portable plugin manifest or marketplace entry.
+Both unfinished builders also referenced the removed `contract/CREDITS.md`.
+The current attribution source is `plugins/emhcl-skills/NOTICE`.
+These were observed packaging failures, not failures of the modeling method.
+
+The chosen design replaces the Custom GPT bundle with a portable skills plugin.
+It reuses the Codex source collector and runtime adaptation.
+It does not add a second modeling method or a second Git transport.
+The fixed choices are the existing seven-operation Git port, validator pin, and human-only merges.
+
+### Needs, requirements, and controls
+
+These requirements are children of P.FR0: distribute the existing modeling workflows to supported OpenAI hosts.
+The criteria below are proposed local acceptance criteria.
+The user requested a finished ChatGPT plugin but did not supply numerical reliability targets.
+
+| Need | Requirement and parent | Acceptance criterion | Design parameter |
+| --- | --- | --- | --- |
+| P.N1: Preserve existing files during builds | P.FR1, child of P.FR0: publish without replacing existing content | A nonempty, file, symlink, or protected source destination fails before any write | P.DP1: destination guard and exclusive file creation |
+| P.N2: Keep one modeling authority | P.FR2, child of P.FR0: distribute the canonical method and language | All 33 modeling skills, their references, shared rules, LICENSE, and NOTICE remain available in a detached package | P.DP2: shared source collector with local-reference checks |
+| P.N3: Install through the documented plugin mechanism | P.FR3, child of P.FR0: expose the complete skill set to the host | The portable manifest and marketplace agree, the manifest supplies the listing text, and the package contains 34 discoverable skills | P.DP3: root manifest with `extensions.com.openai.interface`, root skills directory, and repository marketplace |
+| P.N4: Distinguish advice from executed work | P.FR4, child of P.FR0: use only available tools and report observed results | Missing tools stop repository procedures, and no procedure claims an unobserved validation, write, merge, or hosted artifact | P.DP4: runtime adaptation of the existing collaboration procedures |
+| P.N5: Get the complete instructions of a skill that a person names | P.FR5, child of P.FR0: deliver complete instructions on explicit invocation | Each generated `SKILL.md` has at most 8,000 bytes. Moved text is whole sections in their original order, and `SKILL.md` links to it | P.DP5: section fitter in the shared collector |
+
+P.FR4 includes the six procedures, not six separate copies of the Git policy.
+Its child responsibilities are capability checks, commit-addressed snapshots, pinned validation, guarded writes, and unchanged HTML delivery.
+The existing collaboration sections define their contracts.
+The adapter changes host invocation, installed script discovery, and diagram delivery only.
+It also states that explicit user scope takes priority over optional skill guidance.
+It leaves business decisions, K13 edit permissions, and validation gates with their existing owners.
+
+P.N5 comes from an observed host limit, not from a published rule.
+Codex CLI 0.162.1 shortened an explicitly invoked `SKILL.md` above about 8,000 bytes.
+A 7,941-byte skill arrived complete, and an 8,136-byte skill was shortened.
+Test skills of 8,000 bytes arrived complete, and test skills of 8,050 bytes were shortened.
+Before the fitter, the 10,213-byte `em-collaborate` lost its `Report` and `Execution boundary` sections.
+Codex also names a plugin skill with the plugin prefix, for example `event-modeling-hcl-plugin:em-collaborate`.
+The short name `$em-collaborate` did not select the plugin skill in that version.
+
+### Influence matrix and order
+
+An entry describes the effect of changing a control, not a function call.
+This matrix assumes readable canonical sources, byte-preserving publication, and a host that loads the packaged skills.
+It covers package construction and instruction contracts, not a probability that a model follows those instructions.
+
+| Requirement | P.DP1 | P.DP2 | P.DP3 | P.DP4 | P.DP5 |
+| --- | --- | --- | --- | --- | --- |
+| P.FR1: Preserve existing content | X | 0 | 0 | 0 | 0 |
+| P.FR2: Preserve modeling authority | X | X | 0 | 0 | 0 |
+| P.FR3: Expose all skills | X | X | X | 0 | 0 |
+| P.FR4: Respect runtime limits | X | X | 0 | X | 0 |
+| P.FR5: Deliver complete instructions | X | X | 0 | X | X |
+
+The mapping is decoupled within those conditions.
+Set the destination rules first, the source inventory second, the discovery metadata third, the runtime adapter fourth, and the section fitter last.
+This is design order, not a command execution order.
+At build time, check the destination, collect and adapt all content, fit long skills, check references, then publish.
+
+P.DP1 affects every delivered outcome because rejected or incomplete publication leaves no usable package.
+P.DP2 affects discovery because a missing skill cannot load.
+It affects runtime safety because the procedures and their scripts carry the gates.
+The zeros in P.DP3 hold only while it selects the same skill tree and declares no additional tools or hooks.
+The zeros in P.DP4 hold only while its changes stay inside the runtime boundary.
+Changing a method rule through the adapter violates that boundary and requires a new analysis.
+P.DP2 and P.DP4 affect P.FR5 because they set the size of each `SKILL.md`.
+P.DP3 does not change skill text, so its P.FR5 entry is zero.
+
+The zeros in the P.DP5 column have these mechanisms:
+
+- P.FR2: the fitter moves whole sections without a change. A test joins both parts of each long method skill and compares the result with the canonical file.
+- P.FR3: the front matter stays in `SKILL.md`, so discovery does not change. Codex CLI 0.162.1 listed all 34 skills after the change.
+- P.FR4: the fitter keeps the package sections, which include the execution boundary, in `SKILL.md`. A test checks this for each skill.
+
+After a change to a source skill or to the adapter text, the fitter runs again as part of the build.
+If a single section cannot fit, the build stops before publication.
+
+After an upstream source change, regenerate both packages and repeat reference and runtime checks.
+After a host manifest change, repeat discovery and installation checks.
+A shared collector failure can block both packages.
+This common failure prevents an assumption of independent success probabilities.
+Host loading and model compliance remain unresolved until each supported host completes its manual scenarios.
+
+### Module contracts and integration
+
+The logical modules have these contracts:
+
+| Module | Inputs and outputs | Owned state and failure behavior |
+| --- | --- | --- |
+| Source collector, P.DP2 | Canonical skills, procedures, rules, LICENSE, and NOTICE become a complete file inventory | Owns no model state. Missing sources or references stop the build before publication |
+| Plugin identity, P.DP3 | Canonical release metadata and the listing text become root `plugin.json`; the marketplace selects `./dist/chatgpt` | Owns package identity, listing text, and discovery paths. No server, credentials, hooks, icons, or registered app is implied |
+| Runtime adapter, P.DP4 | Existing procedures become instructions for the installed OpenAI host | Owns host-specific invocation, the priority statement for user instructions, and local HTML delivery. Missing shell or Git operations stop the affected procedure |
+| Section fitter, P.DP5 | A long `SKILL.md` becomes a `SKILL.md` of at most 8,000 bytes and a linked `instructions-continued.md` | Owns only the split point. It keeps the front matter and package sections in `SKILL.md`. A section that cannot fit stops the build |
+| Publisher, P.DP1 | A checked file inventory becomes a standalone output directory | Owns only newly created output files. It refuses nonempty destinations and never clears an old package |
+
+Composition uses C for the required build sequence.
+It uses S to combine the method skills, language skill, and collaboration skill.
+S does not mean that those skills execute concurrently.
+No new feedback junction or retry loop is required.
+The existing bounded repair policy remains in the language skill.
+
+Repository collaboration requires the installed tools and a compatible execution environment.
+Installing the plugin alone does not grant repository access or install the validator.
+Without those tools, business modeling can continue and static HCL review reports that machine validation did not run.
+The procedures never substitute local Git for the configured connector.
+They never merge or write to the default branch.
+OpenAI hosts return unchanged local HTML instead of claiming a Claude team artifact.
+The model repository's CI remains the owner of its canonical Pages diagram.
+
+### Alternatives and acceptance evidence
+
+The Custom GPT upload bundle does not satisfy P.FR3.
+A hosted MCP service adds deployment, authentication, and ownership outside the existing system boundary.
+The portable skills-only package fits that boundary and the documented local installation path.
+This choice is provisional with respect to host behavior until the manual checks pass.
+
+For P.FR5, two other controls were rejected.
+Shorter canonical skills would change the Claude plugins and their release, which is outside this package boundary.
+Trust in the host alone fails the criterion: a shortened `em-collaborate` reached the model without its last sections.
+The fitter changes only generated packages, and the canonical files stay the single authority.
+The fitter depends on a model that reads the linked file.
+In one Codex CLI 0.162.1 run of `em-view` without a Git connector, the model read `instructions-continued.md` and the runtime preflight.
+It then stopped with `Ran: none` and `Gate: none`.
+One run is evidence of the mechanism, not a success probability.
+The 8,000-byte limit is not documented, so a new host version can change it.
+Repeat the explicit-invocation check for each new Codex version.
+
+The manifest does not set `requires_local_executor`.
+That flag marks the whole plugin as desktop only.
+Thirty-three of the 34 skills work without a shell, and the six procedures already stop without one under P.FR4.
+Set the flag only if a public submission must declare desktop execution.
+The package has no `logo` or `composerIcon`.
+A local marketplace installs without them, but a public submission requires a primary icon.
+The maintainer owns that brand choice.
+
+No measured joint success probability is available.
+There is therefore no numerical Information Axiom score.
+Compare alternatives only against the same skill coverage, permission rules, model size, and supported host versions.
+Record discovery failures, missing-tool handling, incorrect tool claims, and modeling outcomes during those runs.
+Package size or component count is not information content.
+
+Local checks cover detached resources, reference resolution, the `SKILL.md` size limit, destination failures, and bundled script execution.
+Change scenarios must include a missing source, a changed source inventory, a fresh destination, and an existing destination.
+Host scenarios must include complete-model routing, syntax-only work, locked shared consumers, missing tools, forbidden merges, and explicit invocation of a long skill.
+Run all six repository procedures in a disposable repository with each supported connector.
+Record the host version, commit, available tools, actual validator output, and observed response.
+Local package checks do not prove ChatGPT installation, authenticated writes, or correct model behavior.
 
 ## Terms
 
