@@ -54,7 +54,7 @@ release tags have the form `event-modeling-hcl-plugin--v<version>`, as
   unchanged from emhcl v0.17.0 (specification v0.8.0), and 32 method skills
   that write one part of the model each and name no other skill.
 - The method contract `contract/method.md` (K0 to K12), its HCL v0.8.0
-  binding `contract/hcl-binding.md` (H0 to H11), and `contract/CREDITS.md`.
+  binding `contract/hcl-binding.md` (H0 to H11), and .
 - `scripts/build-contract.sh`, which copies the contract sections that each
   method skill lists into its `references/contract.md`, and checks them with
   `--check`.

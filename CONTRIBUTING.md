@@ -86,7 +86,7 @@ pin of the example. With `EMHCL=<binary>`, `--check` also compares the
 ## Release
 
 Do not release the new method content until the source-license question in
-`contract/CREDITS.md` is resolved. The text-overlap scan cannot grant rights
+ is resolved. The text-overlap scan cannot grant rights
 to use source material.
 
 1. Run the tests and the manual test.
